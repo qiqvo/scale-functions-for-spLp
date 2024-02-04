@@ -1,7 +1,4 @@
-from abc import ABC, abstractmethod
-from typing import Callable
 import numpy as np
-import scipy as sc
 
 from random_variable import RandomVariable
 
