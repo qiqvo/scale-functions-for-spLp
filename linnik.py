@@ -2,7 +2,7 @@ import numpy as np
 from scipy.stats import gengamma
 
 from random_variable import RandomVariable
-from positive_stable_random_variable import StableRandomVariable
+from skewed_stable_random_variable import StableRandomVariable
 
 
 class Linnik(RandomVariable):
