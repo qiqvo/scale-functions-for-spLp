@@ -44,7 +44,7 @@ class SkewedStableRandomVariable(RandomVariable):
 
 class TotallySkewedStableRandomVariable(SkewedStableRandomVariable):
     def __init__(self, alpha: float) -> None:
-        super().__init__(alpha, 1 if alpha < 1 else -1)
+        super().__init__(alpha, -1 if alpha < 1 else 1)
 
 
 class SymmetricStableRandomVariable(SkewedStableRandomVariable):
