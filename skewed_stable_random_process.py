@@ -16,10 +16,10 @@ class TotallySkewedStableRandomProcess(RandomProcess):
     def laplace_transform(self, t: np.float64, time: float, z: np.float64) -> np.float64:
         return self.xi.laplace_transform(t * np.power(time, 1/self.alpha)) * np.exp(-z * t)
 
-    def mean(self, t: np.float64, time: float, z: np.float64) -> np.float64:
+    def mean(self, time: float, z: np.float64) -> np.float64:
         return self.xi.mean() * np.power(time, 1/self.alpha) + z
 
-    def variance(self, t: np.float64, time: float, z: np.float64) -> np.float64:
+    def variance(self, time: float, z: np.float64) -> np.float64:
         return self.xi.variance() * np.power(time, 2/self.alpha)
 
     def sample(self, N: int, time: float, z: np.float64) -> np.ndarray[float]:

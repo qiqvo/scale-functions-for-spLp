@@ -17,11 +17,11 @@ class RandomProcess(ABC):
         return None
 
     @abstractmethod
-    def mean(self, t: np.float64, time: float, z: np.float64) -> np.float64:
+    def mean(self, time: float, z: np.float64) -> np.float64:
         return None
 
     @abstractmethod
-    def variance(self, t: np.float64, time: float, z: np.float64) -> np.float64:
+    def variance(self, time: float, z: np.float64) -> np.float64:
         return None
 
     @abstractmethod
