@@ -7,26 +7,23 @@ from stick_breaking_process import StickBreakingProcess
 
 
 class ScaleFunction():
-    def __init__(self, q: float, process: RandomProcess) -> None:
-        self.q = q
+    def __init__(self, process: RandomProcess) -> None:
+        # self.q = q
         self.process = process 
         self.m = self.process.mean(1, 0)
         self._setup()
 
     def _setup(self) -> StickBreakingProcess:
-        return None
-    
-class IISBScaleFunction(ScaleFunction):
+        if self.m <= 0:
+            self.measure_change()
+
+class SBScaleFunction(ScaleFunction):
     """
-    Scale function on the Inf Interval Stick breaking process. 
+    Scale function via Stick breaking process. 
     """
-    def __init__(self, process: RandomProcess, epsilon: float) -> None:
-        self.epsilon = epsilon 
+    def __init__(self, process: RandomProcess) -> None:
         super().__init__(process)
 
-    def _setup(self) -> InfIntervalStickBreakingProcess:
-        self.stick_breaking = InfIntervalStickBreakingProcess(self.process, self.epsilon)
-    
     def sampled_value(self, x: float, N: int):
         assert self.m > 0
 
@@ -40,3 +37,30 @@ class IISBScaleFunction(ScaleFunction):
         p = np.sum(ps) / N
         return p / self.m
         
+
+
+class IISBScaleFunction(SBScaleFunction):
+    """
+    Scale function on the Inf Interval Stick breaking process. 
+    """
+    def __init__(self, process: RandomProcess, epsilon: float) -> None:
+        self.epsilon = epsilon 
+        super().__init__(process)
+
+    def _setup(self) -> InfIntervalStickBreakingProcess:
+        super()._setup()
+        self.stick_breaking = InfIntervalStickBreakingProcess(self.process, self.epsilon)
+    
+
+class FISBScaleFunction(SBScaleFunction):
+    """
+    Scale function on the Fixed Interval Stick breaking process. 
+    """
+    def __init__(self, process: RandomProcess, epsilon: float) -> None:
+        self.epsilon = epsilon 
+        super().__init__(process)
+
+    def _setup(self) -> InfIntervalStickBreakingProcess:
+        super()._setup()
+        self.stick_breaking = InfIntervalStickBreakingProcess(self.process, self.epsilon)
+    
