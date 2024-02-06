@@ -24,7 +24,7 @@ class SkewedStableRandomVariable(RandomVariable):
         if self.alpha < 1:
             return np.infty
         if 1 < self.alpha < 2:
-            return None 
+            return 0
 
     def variance(self) -> np.float64:
         if self.alpha < 2:
