@@ -14,10 +14,10 @@ class PosDriftTotallySkewedStableRandomProcess(TotallySkewedStableRandomProcess)
     def laplace_transform(self, t: np.float64, time: float, z: np.float64) -> np.float64:
         return super().laplace_transform(t, time, z) * np.exp(-t * self.drift * time)
 
-    def mean(self, t: np.float64, time: float, z: np.float64) -> np.float64:
-        return super().mean(t, time, z) + self.drift * time
+    def mean(self, time: float, z: np.float64) -> np.float64:
+        return super().mean(time, z) + self.drift * time
 
-    def variance(self, t: np.float64, time: float, z: np.float64) -> np.float64:
+    def variance(self, time: float, z: np.float64) -> np.float64:
         return super().variance(t, time, z)
 
     def sample(self, N: int, time: float, z: np.float64) -> np.ndarray[float]:

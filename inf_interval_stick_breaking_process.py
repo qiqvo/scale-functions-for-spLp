@@ -33,5 +33,4 @@ class InfIntervalStickBreakingProcess(StickBreakingProcess):
                 xi = self.process.sample(1, l, 0)[0]
                 xis.append(xi)
             s.append((ls[:], np.array(xis)))
-
         return s
