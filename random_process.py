@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Callable
 import numpy as np
-import scipy as sc
 
 
 class RandomProcess(ABC):
