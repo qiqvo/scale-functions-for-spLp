@@ -1,6 +1,7 @@
 
 
 import numpy as np
+from fixed_interval_stick_breaking_process import FixedIntervalStickBreakingProcess
 from inf_interval_stick_breaking_process import InfIntervalStickBreakingProcess
 from random_process import RandomProcess
 from stick_breaking_process import StickBreakingProcess
@@ -36,8 +37,6 @@ class SBScaleFunction(ScaleFunction):
         
         p = np.sum(ps) / N
         return p / self.m
-        
-
 
 class IISBScaleFunction(SBScaleFunction):
     """
@@ -56,11 +55,12 @@ class FISBScaleFunction(SBScaleFunction):
     """
     Scale function on the Fixed Interval Stick breaking process. 
     """
-    def __init__(self, process: RandomProcess, epsilon: float) -> None:
-        self.epsilon = epsilon 
+    def __init__(self, process: RandomProcess, T: float, n_sticks: int) -> None:
+        self.T = T
+        self.n_sticks = n_sticks
         super().__init__(process)
 
-    def _setup(self) -> InfIntervalStickBreakingProcess:
+    def _setup(self) -> FixedIntervalStickBreakingProcess:
         super()._setup()
-        self.stick_breaking = InfIntervalStickBreakingProcess(self.process, self.epsilon)
+        self.stick_breaking = FixedIntervalStickBreakingProcess(self.process, self.T, self.n_sticks)
     
