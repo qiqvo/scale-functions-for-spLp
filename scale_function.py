@@ -1,5 +1,3 @@
-
-
 import numpy as np
 from fixed_interval_stick_breaking_process import FixedIntervalStickBreakingProcess
 from inf_interval_stick_breaking_process import InfIntervalStickBreakingProcess
