@@ -1,6 +1,6 @@
 import numpy as np
 import scipy
-from random_variable.levy_random_variable import DecreasingDensitySpectrallyNegativeLevyRandomVariable
+from random_variable.spectrally_negative_levy_random_variable import DecreasingDensitySpectrallyNegativeLevyRandomVariable
 
 
 class TemperedTotallySkewedStableRandomVariable(DecreasingDensitySpectrallyNegativeLevyRandomVariable):

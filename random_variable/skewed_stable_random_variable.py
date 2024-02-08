@@ -1,6 +1,7 @@
 import numpy as np
 
 from random_variable.random_variable import RandomVariable
+from random_variable.tempered_stable_random_variable import UntemperedTotallySkewedStableRandomVariable
 
 class SkewedStableRandomVariable(RandomVariable):
     def __init__(self, alpha: float, beta: float) -> None:
@@ -42,14 +43,15 @@ class SkewedStableRandomVariable(RandomVariable):
         return s
     
 
-class TotallySkewedStableRandomVariable(SkewedStableRandomVariable):
+class TotallySkewedStableRandomVariable(SkewedStableRandomVariable, UntemperedTotallySkewedStableRandomVariable):
     def __init__(self, alpha: float) -> None:
         super().__init__(alpha, -1 if alpha < 1 else 1)
+        super(SkewedStableRandomVariable, self).__init__(alpha)
 
     def laplace_transform(self, t: np.float64) -> np.float64:
         return np.exp(np.sign(self.alpha - 1) * (t)**self.alpha)
-
-
+    
+    
 class SymmetricStableRandomVariable(SkewedStableRandomVariable):
     def __init__(self, alpha: float) -> None:
         super().__init__(alpha, 0)
