@@ -1,6 +1,7 @@
 from typing import Any, Callable
 import numpy as np
 import scipy
+
 from random_variable.spectrally_negative_levy_random_variable import SpectrallyNegativeLevyRandomVariable
 
 
