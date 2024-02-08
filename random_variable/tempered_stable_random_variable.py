@@ -16,7 +16,7 @@ class TemperedTotallySkewedStableRandomVariable(TemperedSpectrallyNegativeLevyRa
 
         mu = 1/(self.alpha - 1) / self._const
         nu_unwarranted = lambda x: 1 / (-x)**(1 + self.alpha) / self._const
-        nu = lambda x: nu_unwarranted(x) if x < -self._min_jump_cutoff else 0
+        nu = lambda x: nu_unwarranted(x) if x <= -self._min_jump_cutoff else 0
 
         super().__init__(c, mu, 0, nu, nu_unwarranted, max_jump_cutoff=max_jump_cutoff)
 
