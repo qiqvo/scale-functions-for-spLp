@@ -19,15 +19,10 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
         self.nu_unwarranted = nu_unwarranted 
 
         self._max_jump_cutoff = max_jump_cutoff
-        self._calculate_integrals()
+        self.nu_compensation = self.get_nu_compensation()
         
-    def _calculate_integrals(self):
-        self._I1 = scipy.integrate.quad(lambda x: x * self.nu(x), -1, 0)[0]
-        self._I2 = scipy.integrate.quad(lambda x: x * x * self.nu(x), -1, 0)[0]
-
-        self._II1 = scipy.integrate.quad(lambda x: x * self.nu(x), -self._max_jump_cutoff, -1)[0]
-        self._II2 = scipy.integrate.quad(lambda x: x * x * self.nu(x), -self._max_jump_cutoff, -1)[0]
-        self._II2 -= (scipy.integrate.quad(lambda x: x * self.nu(x), -self._max_jump_cutoff, -1))[0] **2
+    def get_nu_compensation(self):
+        return scipy.integrate.quad(lambda x: x * self.nu(x), -1, 0)[0]
 
     # TODO: finish up
     def characteristic_function(self, t: np.complex64) -> np.complex64: 
@@ -44,13 +39,13 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
     def cdf(self, x: np.float64) -> np.float64:
         return None
 
-    # TODO: test
+    # TODO: 
     def mean(self) -> np.float64:
-        return self.mu + self._II1
+        return None # self.mu + self._II1
 
-    # TODO: test 
+    # TODO: 
     def variance(self) -> np.float64:
-        return self.sigma*self.sigma + self._II2 + self._I2
+        return None #self.sigma*self.sigma + self._II2 + self._I2
         
     def max_abs_nu_on_interval(self, a: float, b: float):
         return -scipy.optimize.fmin(lambda x: -self.nu(x) if a < x < b else 0).fopt
@@ -86,7 +81,7 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
                 s[i] += np.sum(js)
                 # compensated measure
                 if b == 1:
-                    s[i] -= self._I1
+                    s[i] -= self.nu_compensation
             a, b = b, b*2
         return s
         
