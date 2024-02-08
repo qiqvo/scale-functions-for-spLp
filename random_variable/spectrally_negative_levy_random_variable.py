@@ -22,7 +22,8 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
         self.nu_compensation = self.get_nu_compensation()
         
     def get_nu_compensation(self):
-        return scipy.integrate.quad(lambda x: x * self.nu(x), -1, 0)[0]
+        nu_compensation = scipy.integrate.quad(lambda x: x * self.nu(x), -1, 0)[0]
+        return nu_compensation
 
     # TODO: finish up
     def characteristic_function(self, t: np.complex64) -> np.complex64: 
@@ -52,12 +53,12 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
     def get_min_jump_size(self):
         return 0
     
-    # def get_shifted_sigma(self):
-    #     return self.sigma
+    def get_shifted_sigma(self):
+        return self.sigma
 
     def sample(self, N: int) -> np.ndarray[float]:
-        # shifted_sigma = self.get_shifted_sigma()
-        s = np.random.normal(self.mu, self.sigma, N)
+        shifted_sigma = self.get_shifted_sigma()
+        s = np.random.normal(self.mu, shifted_sigma, N)
 
         a, b = self.get_min_jump_size(), 1
         while a < self._max_jump_cutoff:

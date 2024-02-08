@@ -7,7 +7,7 @@ from random_variable.tempered_stable_random_variable import TemperedTotallySkewe
 def main():
     alpha = 1.5
     N = 1000
-    mult = 10
+    mult = 1
     c = 0
     
     X = TotallySkewedStableRandomVariable(alpha)

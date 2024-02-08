@@ -8,7 +8,7 @@ def main():
     alpha = 1.5
     N = 1000
     mult = 1
-    c = 10
+    c = 1
     
     X = TotallySkewedStableRandomVariable(alpha)
     s1 = X.sample(N)
