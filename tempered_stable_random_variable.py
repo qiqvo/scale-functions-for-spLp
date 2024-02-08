@@ -22,8 +22,21 @@ class TemperedTotallySkewedStableRandomVariable(DecreasingDensitySpectrallyNegat
     def _inner_nu(self, x):
         return np.exp(self.c * x) / (-x)**(1 + self.alpha) / self._const
 
+    # def get_mu(self):
+    #     # see for example Ch 9.5 of Financial Modelling with Jump Processes By Rama Cont, Peter Tankov
+    #     mu = 1/(self.alpha - 1) 
+    #     mu -= scipy.integrate.quad(lambda x: (np.exp(self.c * x) - 1) / (-x)**(self.alpha), -1, 0)[0] 
+    #     mu /= self._const
+    #     return mu
+
     def get_mu(self):
-        return scipy.integrate.quad(lambda x: np.exp(-self.c / x) * (x)**(self.alpha-2), 0, 1)[0] / self._const
+        # by computing the mean
+        mu = scipy.integrate.quad(lambda x: np.exp(-self.c / x) * (x)**(self.alpha-2), 0, 1)[0] / self._const
+        mu += self.mean()
+        return mu
+
+    def mean(self):
+        return self.alpha * self.c ** (self.alpha - 1)
 
     def laplace_transform(self, t: np.float64) -> np.float64:
         return np.exp((t + self.c)**self.alpha - (self.c)**self.alpha)
