@@ -30,12 +30,21 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
         return nu_compensation
 
     # TODO: finish up
-    def characteristic_function(self, t: np.complex64) -> np.complex64: 
+    def characteristic_function(self, t: np.complex64) -> np.complex64:
         return None
     
     # TODO: finish up
     def laplace_transform(self, t: np.float64) -> np.float64:
-        return None
+        return np.exp(self.psi(t))
+    
+    def psi(self, t: np.float64) -> np.float64:
+        res = - t * self.mu + t*t*self.sigma*self.sigma / 2
+        res += scipy.integrate.quad(lambda x: (np.exp(t*x) - 1) * self.nu(x), -np.infty, -1)[0]
+        res += scipy.integrate.quad(lambda x: (np.exp(t*x) - 1 - t*x) * self.nu(x), -1, 0)[0]
+    
+    def phi(self, q) -> np.float64:
+        res = scipy.optimize.brentq(lambda t: self.psi(t) - q, 0, 1000)
+        return res
     
     def pdf(self, x: np.float64) -> np.float64:
         return None
