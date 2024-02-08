@@ -6,8 +6,6 @@ from random_process.random_process import RandomProcess
 
 class StickBreakingRepresentation(ABC):
     def __init__(self, process: RandomProcess) -> None:
-        rng = np.random.default_rng(seed=0)
-        self.poisson_generator = rng.poisson
         self.process = process
         
     @abstractmethod

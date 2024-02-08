@@ -1,11 +1,13 @@
 import numpy as np
 
+from settings import seed
+
 from random_variable.random_variable import RandomVariable
 from random_variable.tempered_stable_random_variable import UntemperedTotallySkewedStableRandomVariable
 
 class SkewedStableRandomVariable(RandomVariable):
     def __init__(self, alpha: float, beta: float) -> None:
-        self.rng = np.random.default_rng(seed=0)
+        self.rng = np.random.default_rng(seed=seed)
 
         self.alpha = alpha
         self.beta = beta

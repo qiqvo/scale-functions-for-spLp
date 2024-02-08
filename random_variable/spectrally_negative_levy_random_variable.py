@@ -2,6 +2,8 @@ from typing import Any, Callable
 import numpy as np
 import scipy
 
+from settings import seed
+
 from random_variable.random_variable import RandomVariable
 
 class SpectrallyNegativeLevyRandomVariable(RandomVariable):    
@@ -13,7 +15,7 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
     #             + \int_-infty^0 (e^{lambda x} - 1 - lambda x 1_{x>-1}) nu(dx))
     # and nu(dx) is finite!
     def __init__(self, mu: float, sigma: float, nu: Callable, nu_unwarranted: Callable=None, max_jump_cutoff:float=2**12) -> None:
-        self.rng = np.random.default_rng(seed=0)
+        self.rng = np.random.default_rng(seed=seed)
 
         self.mu = mu
         self.sigma = sigma

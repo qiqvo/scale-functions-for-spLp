@@ -1,6 +1,9 @@
 import numpy as np
-from random_process.random_process import RandomProcess
 
+
+from settings import seed
+
+from random_process.random_process import RandomProcess
 from stick_breaking_representation.stick_breaking_representation import StickBreakingRepresentation
 
 
@@ -8,6 +11,9 @@ class InfIntervalStickBreakingRepresentation(StickBreakingRepresentation):
     # work between eps and 1/eps
     def __init__(self, process: RandomProcess, epsilon: float) -> None:
         super().__init__(process)
+
+        self.rng = np.random.default_rng(seed=seed)
+
         self._eps = epsilon
         self._inv_eps = 1/epsilon
         self.M = 2 * np.log(self._inv_eps)
@@ -24,7 +30,7 @@ class InfIntervalStickBreakingRepresentation(StickBreakingRepresentation):
         return m / self.M
 
     def sample(self, N: int) -> np.ndarray:
-        P = self.poisson_generator(self.M, N)
+        P = self.rng.poisson(self.M, N)
         s = []
         for n in P:
             ls = np.power(self._eps, np.random.uniform(-1, 1, n))
