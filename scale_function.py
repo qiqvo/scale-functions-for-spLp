@@ -20,13 +20,14 @@ class SBScaleFunction(ScaleFunction):
     """
     Scale function via Stick breaking process. 
     """
-    def __init__(self, process: RandomProcess) -> None:
+    def __init__(self, process: RandomProcess, stick_breaking_process: StickBreakingProcess) -> None:
         super().__init__(process)
+        self.stick_breaking_process = stick_breaking_process 
 
     def sampled_value(self, x: float, N: int):
         assert self.m > 0
 
-        sbs = self.stick_breaking.sample(N)
+        sbs = self.stick_breaking_process.sample(N)
         ps = []
         for i in range(N):
             xis = sbs[i][1]
@@ -35,30 +36,3 @@ class SBScaleFunction(ScaleFunction):
         
         p = np.sum(ps) / N
         return p / self.m
-
-class IISBScaleFunction(SBScaleFunction):
-    """
-    Scale function on the Inf Interval Stick breaking process. 
-    """
-    def __init__(self, process: RandomProcess, epsilon: float) -> None:
-        self.epsilon = epsilon 
-        super().__init__(process)
-
-    def _setup(self) -> InfIntervalStickBreakingProcess:
-        super()._setup()
-        self.stick_breaking = InfIntervalStickBreakingProcess(self.process, self.epsilon)
-    
-
-class FISBScaleFunction(SBScaleFunction):
-    """
-    Scale function on the Fixed Interval Stick breaking process. 
-    """
-    def __init__(self, process: RandomProcess, T: float, n_sticks: int) -> None:
-        self.T = T
-        self.n_sticks = n_sticks
-        super().__init__(process)
-
-    def _setup(self) -> FixedIntervalStickBreakingProcess:
-        super()._setup()
-        self.stick_breaking = FixedIntervalStickBreakingProcess(self.process, self.T, self.n_sticks)
-    
