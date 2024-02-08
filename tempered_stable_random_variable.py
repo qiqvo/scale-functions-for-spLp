@@ -12,13 +12,15 @@ class TemperedTotallySkewedStableRandomVariable(DecreasingDensitySpectrallyNegat
         # this _const shows up in Proof of Thm 14.10 in Sato:
         self._const = scipy.special.gamma(-self.alpha)
 
-        nu_unwarranted = lambda x: np.exp(c * x) / (-x)**(1 + alpha) / self._const
-        nu = lambda x: nu_unwarranted(x) if x <= -min_jump_cutoff else 0
+        nu = lambda x: self._inner_nu(x) if x <= -min_jump_cutoff else 0
 
         sigma = self.get_shifted_sigma()
         mu = self.get_mu()
 
-        super().__init__(mu, sigma, nu, nu_unwarranted=nu_unwarranted, max_jump_cutoff=max_jump_cutoff)
+        super().__init__(mu, sigma, nu, nu_unwarranted=self._inner_nu, max_jump_cutoff=max_jump_cutoff)
+
+    def _inner_nu(self, x):
+        return np.exp(self.c * x) / (-x)**(1 + self.alpha) / self._const
 
     def get_mu(self):
         return scipy.integrate.quad(lambda x: np.exp(-self.c / x) * (x)**(self.alpha-2), 0, 1)[0] / self._const
@@ -30,7 +32,7 @@ class TemperedTotallySkewedStableRandomVariable(DecreasingDensitySpectrallyNegat
         return self._min_jump_cutoff
     
     def get_shifted_sigma(self):
-        return 0
+        return np.sqrt(scipy.integrate.quad(lambda x: self._inner_nu(-x) * x * x, 0, self._min_jump_cutoff)[0])
 
 
 class UntemperedTotallySkewedStableRandomVariable(TemperedTotallySkewedStableRandomVariable):

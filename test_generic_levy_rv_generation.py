@@ -4,17 +4,17 @@ from inf_interval_stick_breaking_process import InfIntervalStickBreakingProcess
 from pos_drift_skewed_stable_random_process import PosDriftTotallySkewedStableRandomProcess
 from scale_function import FISBScaleFunction, IISBScaleFunction
 from skewed_stable_random_variable import TotallySkewedStableRandomVariable
-from tempered_stable_random_variable import TemperedTotallySkewedStableRandomVariable
+from tempered_stable_random_variable import TemperedTotallySkewedStableRandomVariable, UntemperedTotallySkewedStableRandomVariable
 
 
 def main():
     alpha = 1.5
-    N = 1000
+    N = 10000
     mult = 1
     
     X = TotallySkewedStableRandomVariable(alpha)
     s1 = X.sample(N)
-    Y = TemperedTotallySkewedStableRandomVariable(alpha, 0)
+    Y = UntemperedTotallySkewedStableRandomVariable(alpha)
     s2 = Y.sample(N*mult)
 
     plt.plot(range(N), np.sort(s1), label='X')
