@@ -5,6 +5,8 @@ from random_variable.tempered_stable_random_variable import UntemperedTotallySke
 
 class SkewedStableRandomVariable(RandomVariable):
     def __init__(self, alpha: float, beta: float) -> None:
+        self.rng = np.random.default_rng(seed=0)
+
         self.alpha = alpha
         self.beta = beta
         self._k = 1 - abs(1 - self.alpha)
@@ -32,8 +34,8 @@ class SkewedStableRandomVariable(RandomVariable):
             return np.infty
         
     def sample(self, N: int) -> np.ndarray[float]:
-        w = -np.log(np.random.uniform(0, 1, N))
-        Phi = np.random.uniform(-1, 1, N) * np.pi / 2
+        w = -np.log(self.rng.uniform(0, 1, N))
+        Phi = self.rng.uniform(-1, 1, N) * np.pi / 2
         Phi0 = - np.pi / 2 * self.beta * self._k / self.alpha
         dPhi = Phi - Phi0
 
@@ -51,7 +53,7 @@ class TotallySkewedStableRandomVariable(SkewedStableRandomVariable, UntemperedTo
     def laplace_transform(self, t: np.float64) -> np.float64:
         return np.exp(np.sign(self.alpha - 1) * (t)**self.alpha)
     
-    
+
 class SymmetricStableRandomVariable(SkewedStableRandomVariable):
     def __init__(self, alpha: float) -> None:
         super().__init__(alpha, 0)

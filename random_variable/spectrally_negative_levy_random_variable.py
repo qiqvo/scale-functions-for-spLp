@@ -13,6 +13,8 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
     #             + \int_-infty^0 (e^{lambda x} - 1 - lambda x 1_{x>-1}) nu(dx))
     # and nu(dx) is finite!
     def __init__(self, mu: float, sigma: float, nu: Callable, nu_unwarranted: Callable=None, max_jump_cutoff:float=2**12) -> None:
+        self.rng = np.random.default_rng(seed=0)
+
         self.mu = mu
         self.sigma = sigma
         self.nu = nu
@@ -58,7 +60,7 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
 
     def sample(self, N: int) -> np.ndarray[float]:
         shifted_sigma = self.get_shifted_sigma()
-        s = np.random.normal(self.mu, shifted_sigma, N)
+        s = self.rng.normal(self.mu, shifted_sigma, N)
 
         a, b = self.get_min_jump_size(), 1
         while a < self._max_jump_cutoff:
@@ -67,11 +69,11 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
 
             # simulate Pois with intensity nu on [-b, -a]
             interval_max = self.max_abs_nu_on_interval(-b, -a) 
-            P = np.random.poisson(interval_max * (b - a), N)
+            P = self.rng.poisson(interval_max * (b - a), N)
             
             for i in range(N):
-                Ts = np.random.uniform(0, interval_max, P[i])
-                js = np.random.uniform(-b, -a, P[i])
+                Ts = self.rng.uniform(0, interval_max, P[i])
+                js = self.rng.uniform(-b, -a, P[i])
                 if self.nu_unwarranted is not None:
                     rs = self.nu_unwarranted(js) > Ts
                 else:
