@@ -1,7 +1,7 @@
 from typing import Callable
 import numpy as np
 
-from skewed_stable_random_process import TotallySkewedStableRandomProcess
+from random_process.skewed_stable_random_process import TotallySkewedStableRandomProcess
 
 class PosDriftTotallySkewedStableRandomProcess(TotallySkewedStableRandomProcess):
     def __init__(self, alpha: float, drift: float) -> None:
@@ -18,7 +18,7 @@ class PosDriftTotallySkewedStableRandomProcess(TotallySkewedStableRandomProcess)
         return super().mean(time, z) + self.drift * time
 
     def variance(self, time: float, z: np.float64) -> np.float64:
-        return super().variance(t, time, z)
+        return super().variance(time, z)
 
     def sample(self, N: int, time: float, z: np.float64) -> np.ndarray[float]:
         return super().sample(N, time, z) + self.drift * time

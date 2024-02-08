@@ -1,8 +1,6 @@
 from matplotlib import pyplot as plt
 
-from inf_interval_stick_breaking_process import InfIntervalStickBreakingProcess
-from pos_drift_skewed_stable_random_process import PosDriftTotallySkewedStableRandomProcess
-from scale_function import FISBScaleFunction, IISBScaleFunction
+from random_process.pos_drift_skewed_stable_random_process import PosDriftTotallySkewedStableRandomProcess
 
 
 def main():

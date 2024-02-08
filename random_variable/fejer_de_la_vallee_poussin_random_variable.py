@@ -1,6 +1,6 @@
 import numpy as np
 
-from random_variable import RandomVariable
+from random_variable.random_variable import RandomVariable
 
 # Fejer-de la Vallee Poussin
 class FejerDeLaValleePoussinRandomVariable(RandomVariable):

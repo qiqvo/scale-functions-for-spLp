@@ -1,8 +1,8 @@
 from typing import Callable
 import numpy as np
 
-from random_process import RandomProcess
-from skewed_stable_random_variable import TotallySkewedStableRandomVariable
+from random_process.random_process import RandomProcess
+from random_variable.skewed_stable_random_variable import TotallySkewedStableRandomVariable
 
 class TotallySkewedStableRandomProcess(RandomProcess):
     def __init__(self, alpha: float) -> None:

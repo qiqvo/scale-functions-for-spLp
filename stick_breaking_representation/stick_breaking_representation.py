@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 import numpy as np
 
-from random_process import RandomProcess
+from random_process.random_process import RandomProcess
 
 
-class StickBreakingProcess(ABC):
+class StickBreakingRepresentation(ABC):
     def __init__(self, process: RandomProcess) -> None:
         rng = np.random.default_rng()
         self.poisson_generator = rng.poisson

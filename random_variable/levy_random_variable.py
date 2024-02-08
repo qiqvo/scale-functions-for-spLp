@@ -2,7 +2,7 @@ from typing import Any, Callable
 import numpy as np
 import scipy
 
-from random_variable import RandomVariable
+from random_variable.random_variable import RandomVariable
 
 class SpectrallyNegativeLevyRandomVariable(RandomVariable):    
     # assuming the form (mu, sigma, nu)
@@ -27,7 +27,6 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
     # TODO: finish up
     def characteristic_function(self, t: np.complex64) -> np.complex64: 
         return None
-        return np.exp(- (1j * self.mu * t + self.sigma**2 / 2 * t * t + ...))
     
     # TODO: finish up
     def laplace_transform(self, t: np.float64) -> np.float64:

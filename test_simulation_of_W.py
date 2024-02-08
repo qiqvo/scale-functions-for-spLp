@@ -1,9 +1,9 @@
 from matplotlib import pyplot as plt
 import numpy as np
-from fixed_interval_stick_breaking_process import ExpIntervalStickBreakingProcess, FixedIntervalStickBreakingProcess
-from inf_interval_stick_breaking_process import InfIntervalStickBreakingProcess
-from pos_drift_skewed_stable_random_process import PosDriftTotallySkewedStableRandomProcess
-from scale_function import SBScaleFunction
+from random_process.pos_drift_skewed_stable_random_process import PosDriftTotallySkewedStableRandomProcess
+from scale_function.sb_scale_function import SBScaleFunction
+from stick_breaking_representation.fixed_interval_stick_breaking_representation import ExpIntervalStickBreakingRepresentation, FixedIntervalStickBreakingRepresentation
+from stick_breaking_representation.inf_interval_stick_breaking_representation import InfIntervalStickBreakingRepresentation
 
 
 def main():
@@ -12,27 +12,29 @@ def main():
     T = 1000
     epsilon = 0.001
     n_sticks = 20
+    q = 0
+    N = 1000
 
     X = PosDriftTotallySkewedStableRandomProcess(alpha, drift)
 
-    P1 = InfIntervalStickBreakingProcess(X, epsilon)
-    P2 = FixedIntervalStickBreakingProcess(X, T, n_sticks)
-    P3 = ExpIntervalStickBreakingProcess(X, 1/T, n_sticks)
+    P1 = InfIntervalStickBreakingRepresentation(X, epsilon)
+    P2 = FixedIntervalStickBreakingRepresentation(X, T, n_sticks)
+    P3 = ExpIntervalStickBreakingRepresentation(X, 1/T, n_sticks)
 
     R = range(100,1100,100)
     for j in range(10, 15):
         epsilon = 0.1**j
-        W1 = SBScaleFunction(X, P1)
-        W2 = SBScaleFunction(X, P2)
-        W3 = SBScaleFunction(X, P3)
+        W1 = SBScaleFunction(q, X, P1, N)
+        W2 = SBScaleFunction(q, X, P2, N)
+        W3 = SBScaleFunction(q, X, P3, N)
         
         w1,w2,w3 = [],[],[]
         for i in R:
             # np.random.seed(0)
-            # w1.append(W1.sampled_value(10, i+2))
+            # w1.append(W1.value(10))
             np.random.seed(0)
-            # w2.append(W2.sampled_value(10, i+2))
-            w3.append(W3.sampled_value(10, i+2))
+            # w2.append(W2.value(10))
+            w3.append(W3.value(10))
         # plt.plot(R, w1, label=f'eps={'%.2E' % epsilon}')
         # plt.plot(R, w2, label=f'eps={'%.2E' % epsilon}')
         plt.plot(R, w3, label=f'eps={'%.2E' % epsilon}')

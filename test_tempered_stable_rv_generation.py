@@ -1,7 +1,7 @@
 from matplotlib import pyplot as plt
 import numpy as np
-from skewed_stable_random_variable import TotallySkewedStableRandomVariable
-from tempered_stable_random_variable import TemperedTotallySkewedStableRandomVariable, UntemperedTotallySkewedStableRandomVariable
+from random_variable.skewed_stable_random_variable import TotallySkewedStableRandomVariable
+from random_variable.tempered_stable_random_variable import TemperedTotallySkewedStableRandomVariable, UntemperedTotallySkewedStableRandomVariable
 
 
 def main():

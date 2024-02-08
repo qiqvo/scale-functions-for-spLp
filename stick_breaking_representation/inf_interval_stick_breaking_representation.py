@@ -1,10 +1,10 @@
 import numpy as np
-from random_process import RandomProcess
+from random_process.random_process import RandomProcess
 
-from stick_breaking_process import StickBreakingProcess
+from stick_breaking_representation.stick_breaking_representation import StickBreakingRepresentation
 
 
-class InfIntervalStickBreakingProcess(StickBreakingProcess):
+class InfIntervalStickBreakingRepresentation(StickBreakingRepresentation):
     # work between eps and 1/eps
     def __init__(self, process: RandomProcess, epsilon: float) -> None:
         super().__init__(process)

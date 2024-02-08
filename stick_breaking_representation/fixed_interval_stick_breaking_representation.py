@@ -1,9 +1,9 @@
 import numpy as np
-from random_process import RandomProcess
+from random_process.random_process import RandomProcess
 
-from stick_breaking_process import StickBreakingProcess
+from stick_breaking_representation.stick_breaking_representation import StickBreakingRepresentation
 
-class FixedIntervalStickBreakingProcess(StickBreakingProcess):
+class FixedIntervalStickBreakingRepresentation(StickBreakingRepresentation):
     def __init__(self, process: RandomProcess, T: float, n_sticks: int) -> None:
         super().__init__(process)
         self._T = T
@@ -35,7 +35,7 @@ class FixedIntervalStickBreakingProcess(StickBreakingProcess):
         return np.array(s)
     
 
-class ExpIntervalStickBreakingProcess(FixedIntervalStickBreakingProcess):
+class ExpIntervalStickBreakingRepresentation(FixedIntervalStickBreakingRepresentation):
     def __init__(self, process: RandomProcess, theta: float, n_sticks: int) -> None:
         super().__init__(process, 1/theta, n_sticks)
 

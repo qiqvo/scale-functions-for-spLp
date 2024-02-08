@@ -1,8 +1,8 @@
 import numpy as np
 from scipy.stats import gengamma
 
-from random_variable import RandomVariable
-from skewed_stable_random_variable import StableRandomVariable
+from random_variable.random_variable import RandomVariable
+from random_variable.skewed_stable_random_variable import StableRandomVariable
 
 
 class Linnik(RandomVariable):

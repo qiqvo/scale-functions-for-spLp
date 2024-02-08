@@ -1,6 +1,6 @@
 import numpy as np
 import scipy
-from levy_random_variable import DecreasingDensitySpectrallyNegativeLevyRandomVariable
+from random_variable.levy_random_variable import DecreasingDensitySpectrallyNegativeLevyRandomVariable
 
 
 class TemperedTotallySkewedStableRandomVariable(DecreasingDensitySpectrallyNegativeLevyRandomVariable):
@@ -27,12 +27,14 @@ class TemperedTotallySkewedStableRandomVariable(DecreasingDensitySpectrallyNegat
     #     mu = 1/(self.alpha - 1) 
     #     mu -= scipy.integrate.quad(lambda x: (np.exp(self.c * x) - 1) / (-x)**(self.alpha), -1, 0)[0] 
     #     mu /= self._const
+    #     print(mu)
     #     return mu
 
     def get_mu(self):
         # by computing the mean
         mu = scipy.integrate.quad(lambda x: np.exp(-self.c / x) * (x)**(self.alpha-2), 0, 1)[0] / self._const
         mu += self.mean()
+        print(mu)
         return mu
 
     def mean(self):
