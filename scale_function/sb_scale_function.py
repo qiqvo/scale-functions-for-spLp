@@ -13,7 +13,7 @@ class SBScaleFunction(ScaleFunction):
     """
     def __init__(self, q: float, process: SpectrallyNegativeLevyRandomProcess, 
                  stick_breaking_representation_factory: StickBreakingRepresentationFactory,
-                 N: int) -> None:
+                 N: int, resample_at_init:bool=False) -> None:
         super().__init__(q, process)
 
         if (self.q > 0 or (self.m < 0 and self.q == 0)):
@@ -23,7 +23,10 @@ class SBScaleFunction(ScaleFunction):
 
         self.stick_breaking_representation = stick_breaking_representation_factory.create(self.process) 
         self.N = N
-        self.resample()
+        if resample_at_init:
+            self.resample()
+        else: 
+            self.stick_breaking_samples = None
 
     def get_c(self, q):
         return self.process.get_underlying_xi_for_time(1).phi(q)
@@ -32,6 +35,9 @@ class SBScaleFunction(ScaleFunction):
         self.stick_breaking_samples = self.stick_breaking_representation.sample(self.N)
 
     def value(self, x: float):
+        if self.stick_breaking_samples is None:
+            self.resample()
+
         ps = []
         for i in range(self.N):
             xis = self.stick_breaking_samples[i][1]
@@ -42,6 +48,9 @@ class SBScaleFunction(ScaleFunction):
         return p / self.m
 
     def profile(self, range_x: np.array) -> ndarray:
+        if self.stick_breaking_samples is None:
+            self.resample()
+            
         ps = []
         for i in range(self.N):
             xis = self.stick_breaking_samples[i][1]
