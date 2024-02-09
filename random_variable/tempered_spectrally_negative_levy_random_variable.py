@@ -30,6 +30,3 @@ class TemperedSpectrallyNegativeLevyRandomVariable(SpectrallyNegativeLevyRandomV
     def mean(self):
         return self.alpha * self.c ** (self.alpha - 1)
     
-
-def create_from_snl_rv(x: SpectrallyNegativeLevyRandomVariable, c: float) -> TemperedSpectrallyNegativeLevyRandomVariable:
-    return TemperedSpectrallyNegativeLevyRandomVariable(c, x.mu, x.sigma, x.nu, x.nu_unwarranted, x._max_jump_cutoff)

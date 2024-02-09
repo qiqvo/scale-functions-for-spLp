@@ -17,7 +17,3 @@ class TemperedSpectrallyNegativeLevyRandomProcess(SpectrallyNegativeLevyRandomPr
                                                     lambda x: time * self.nu(x), 
                                                     lambda x: time * self.nu_unwarranted(x) if self.nu_unwarranted is not None else None, 
                                                     self.max_jump_cutoff)
-
-
-def create_from_snl_process(x: SpectrallyNegativeLevyRandomProcess, c: float) -> TemperedSpectrallyNegativeLevyRandomProcess:
-    return TemperedSpectrallyNegativeLevyRandomProcess(c, x.mu, x.sigma, x.nu, x.nu_unwarranted, x._max_jump_cutoff)

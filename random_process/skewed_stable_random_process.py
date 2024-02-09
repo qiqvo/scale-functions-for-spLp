@@ -1,20 +1,21 @@
 from typing import Callable
 import numpy as np
 
-from random_process.spectrally_negative_levy_random_process import SpectrallyNegativeLevyRandomProcess
+from random_process.tempered_skewed_stable_random_process import TemperedTotallySkewedStableRandomProcess
 from random_variable.skewed_stable_random_variable import TotallySkewedStableRandomVariable
 
-class TotallySkewedStableRandomProcess(SpectrallyNegativeLevyRandomProcess):
+class TotallySkewedStableRandomProcess(TemperedTotallySkewedStableRandomProcess):
     def __init__(self, alpha: float) -> None:
-        self.alpha = alpha
-        self._k = 1 - abs(1 - self.alpha)
-        self.xi = TotallySkewedStableRandomVariable(alpha)
-        super().__init__(self.xi.mu, self.xi.sigma, self.xi.nu, 
-                         self.xi.nu_unwarranted, self.xi._max_jump_cutoff)
+        self.xi = None
+        super().__init__(0, alpha)
 
     def get_underlying_xi_for_time(self, time: float) -> TotallySkewedStableRandomVariable:
-        return TotallySkewedStableRandomVariable(self.alpha, time**(1/self.alpha))
+        res = TotallySkewedStableRandomVariable(self.alpha, time)
+        if self.xi is None:
+            self.xi = res
+        return res
     
+    ### the subsequent methods are simplified due to xi being self-similar 
     def characteristic_function(self, t: np.complex64, time: float, z: np.float64) -> np.complex64:
         return self.xi.characteristic_function(t * np.power(time, 1/self.alpha)) * np.exp(1j * z * t)
 

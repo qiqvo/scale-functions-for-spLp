@@ -2,7 +2,7 @@ import numpy as np
 from numpy import ndarray
 
 from random_process.spectrally_negative_levy_random_process import SpectrallyNegativeLevyRandomProcess
-from random_process.tempered_spectrally_negative_levy_random_process import create_from_snl_process
+from random_process.tempered_random_process_factory import create_tempered
 from scale_function.scale_function import ScaleFunction
 from stick_breaking_representation.stick_breaking_representation_factory import StickBreakingRepresentationFactory
 
@@ -18,8 +18,8 @@ class SBScaleFunction(ScaleFunction):
 
         if (self.q > 0 or (self.m < 0 and self.q == 0)):
             self.original_process = self.process
-            self.c = self.get_c(self.q)
-            self.process = create_from_snl_process(self.process, self.c)
+            self.c = self.compute_c(self.q)
+            self.process = create_tempered(self.process, self.c)
 
         self.stick_breaking_representation = stick_breaking_representation_factory.create(self.process) 
         self.N = N
@@ -28,7 +28,7 @@ class SBScaleFunction(ScaleFunction):
         else: 
             self.stick_breaking_samples = None
 
-    def get_c(self, q):
+    def compute_c(self, q):
         return self.process.get_underlying_xi_for_time(1).phi(q)
     
     def resample(self):
@@ -50,7 +50,7 @@ class SBScaleFunction(ScaleFunction):
     def profile(self, range_x: np.array) -> ndarray:
         if self.stick_breaking_samples is None:
             self.resample()
-            
+
         ps = []
         for i in range(self.N):
             xis = self.stick_breaking_samples[i][1]
