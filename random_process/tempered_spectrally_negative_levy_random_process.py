@@ -10,10 +10,14 @@ class TemperedSpectrallyNegativeLevyRandomProcess(SpectrallyNegativeLevyRandomPr
         super().__init__(mu, sigma, nu, nu_unwarranted, max_jump_cutoff)
         self.c = c
 
-    def _get_underlying_xi_for_time(self, time: float) -> SpectrallyNegativeLevyRandomVariable:
+    def get_underlying_xi_for_time(self, time: float) -> SpectrallyNegativeLevyRandomVariable:
         return TemperedSpectrallyNegativeLevyRandomVariable(self.c, 
                                                     time * self.mu, 
                                                     np.sqrt(time) * self.sigma, 
                                                     lambda x: time * self.nu(x), 
                                                     lambda x: time * self.nu_unwarranted(x) if self.nu_unwarranted is not None else None, 
                                                     self.max_jump_cutoff)
+
+
+def create_from_snl_process(x: SpectrallyNegativeLevyRandomProcess, c: float) -> TemperedSpectrallyNegativeLevyRandomProcess:
+    return TemperedSpectrallyNegativeLevyRandomProcess(c, x.mu, x.sigma, x.nu, x.nu_unwarranted, x._max_jump_cutoff)

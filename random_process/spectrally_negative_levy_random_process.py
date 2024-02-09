@@ -12,7 +12,7 @@ class SpectrallyNegativeLevyRandomProcess(RandomProcess):
         self.nu_unwarranted = nu_unwarranted
         self.max_jump_cutoff = max_jump_cutoff
 
-    def _get_underlying_xi_for_time(self, time: float) -> SpectrallyNegativeLevyRandomVariable:
+    def get_underlying_xi_for_time(self, time: float) -> SpectrallyNegativeLevyRandomVariable:
         return SpectrallyNegativeLevyRandomVariable(time * self.mu, 
                                                     np.sqrt(time) * self.sigma, 
                                                     lambda x: time * self.nu(x), 
@@ -20,19 +20,19 @@ class SpectrallyNegativeLevyRandomProcess(RandomProcess):
                                                     self.max_jump_cutoff)
 
     def characteristic_function(self, t: np.complex64, time: float, z: np.float64) -> np.complex64:
-        return self._get_underlying_xi_for_time(time).characteristic_function(t) * np.exp(1j * z * t)
+        return self.get_underlying_xi_for_time(time).characteristic_function(t) * np.exp(1j * z * t)
 
     def laplace_transform(self, t: np.float64, time: float, z: np.float64) -> np.float64:
-        return self._get_underlying_xi_for_time(time).laplace_transform(t) * np.exp(-z * t)
+        return self.get_underlying_xi_for_time(time).laplace_transform(t) * np.exp(-z * t)
 
     def mean(self, time: float, z: np.float64) -> np.float64:
-        return self._get_underlying_xi_for_time(time).mean() + z
+        return self.get_underlying_xi_for_time(time).mean() + z
 
     def variance(self, time: float, z: np.float64) -> np.float64:
-        return self._get_underlying_xi_for_time(time).variance()
+        return self.get_underlying_xi_for_time(time).variance()
 
     def sample(self, N: int, time: float, z: np.float64) -> np.ndarray[float]:
-        return z + self._get_underlying_xi_for_time(time).sample(N)
+        return z + self.get_underlying_xi_for_time(time).sample(N)
     
     def sample_function(self, N: int, theta: Callable, time: float, z: np.float64) -> np.ndarray[float]:
         return theta(self.sample(N, time, z))
