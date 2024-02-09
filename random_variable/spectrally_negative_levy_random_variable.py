@@ -16,11 +16,13 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
     # and nu(dx) is finite!
     def __init__(self, mu: float, sigma: float, nu: Callable, 
                  nu_unwarranted: Callable=None, 
-                 multiplier: float=1, 
+                 char_multiplier: float=1, 
+                 amplitude_multiplier: float=1,
                  max_jump_cutoff:float=2**12) -> None:
         self.rng = np.random.default_rng(seed=seed)
 
-        self._C = multiplier
+        self._char_multiplier = char_multiplier
+        self.amplitude_multiplier = amplitude_multiplier
         self.mu = mu
         self.sigma = sigma
         self.nu = nu
@@ -28,6 +30,7 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
 
         self._max_jump_cutoff = max_jump_cutoff
         self._max_intensity_over_ab = 1000
+        self._min_intensity_over_ab = 0.1
         self.nu_compensation = self.get_nu_compensation()
         
     def get_nu_compensation(self, a:float=-1, b:float=0):
@@ -43,10 +46,11 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
         return np.exp(self.psi(t))
     
     def psi(self, t: np.float64) -> np.float64:
+        t *= self.amplitude_multiplier
         res = - t * self.mu + t*t*self.sigma*self.sigma / 2
         res += scipy.integrate.quad(lambda x: (np.exp(t*x) - 1) * self.nu(x), -np.infty, -1)[0]
         res += scipy.integrate.quad(lambda x: (np.exp(t*x) - 1 - t*x) * self.nu(x), -1, 0)[0]
-        return res * self._C
+        return res * self._char_multiplier
     
     def phi(self, q:np.float64, a:np.float64=0, b:np.float64=2**10) -> np.float64:
         # if find_min:
@@ -87,7 +91,7 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
 
     def sample(self, N: int) -> np.ndarray[float]:
         shifted_sigma = self.get_shifted_sigma()
-        s = self.rng.normal(self.mu * self._C, shifted_sigma * np.sqrt(self._C), N)
+        s = self.rng.normal(self.mu * self._char_multiplier, shifted_sigma * np.sqrt(self._char_multiplier), N)
 
         a, b = self.get_min_jump_size(), 1
         while a < self._max_jump_cutoff:
@@ -97,11 +101,19 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
             # simulate Pois with intensity nu on [-b, -a]
             # adjusting the level b so that Pois intensity is smaller than self._max_intensity_over_ab 
             interval_max = self.max_abs_nu_on_interval(-b, -a)
-            nu_ab = interval_max * (b - a) * self._C
+            nu_ab = interval_max * (b - a) * self._char_multiplier
             while nu_ab > self._max_intensity_over_ab:
                 b = (b + a) / 2
                 interval_max = self.max_abs_nu_on_interval(-b, -a)
-                nu_ab = interval_max * (b - a) * self._C
+                nu_ab = interval_max * (b - a) * self._char_multiplier
+
+            while nu_ab < self._min_intensity_over_ab:
+                b *= 2
+                interval_max = self.max_abs_nu_on_interval(-b, -a)
+                nu_ab = interval_max * (b - a) * self._char_multiplier
+                if b > self._max_jump_cutoff:
+                    b = self._max_jump_cutoff
+                    break
             P = self.rng.poisson(nu_ab, N)
             
             for i in range(N):
@@ -116,9 +128,9 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
                 s[i] += np.sum(js)
                 # compensated measure
                 if a == self.get_min_jump_size():
-                    s[i] -= self.nu_compensation * self._C 
+                    s[i] -= self.nu_compensation * self._char_multiplier 
             a, b = b, b*2
-        return s
+        return s * self.amplitude_multiplier
         
 
 class DecreasingDensitySpectrallyNegativeLevyRandomVariable(SpectrallyNegativeLevyRandomVariable):

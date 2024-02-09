@@ -20,6 +20,7 @@ class SBScaleFunction(ScaleFunction):
             self.original_process = self.process
             self.c = self.compute_c(self.q)
             self.process = create_tempered(self.process, self.c)
+            self.m = self.process.mean(1, 0)
 
         self.stick_breaking_representation = stick_breaking_representation_factory.create(self.process) 
         self.N = N
@@ -47,18 +48,15 @@ class SBScaleFunction(ScaleFunction):
         p = np.sum(ps) / self.N
         return p / self.m
 
-    def profile(self, range_x: np.array) -> ndarray:
+    def profile(self) -> ndarray:
         if self.stick_breaking_samples is None:
             self.resample()
 
-        ps = []
+        ps = [0]
         for i in range(self.N):
             xis = self.stick_breaking_samples[i][1]
             x_i = np.sum(xis, where=xis < 0)
             ps.append(x_i)
-        ps = np.array(ps)
-
-        p = []
-        for x in range_x:
-            p.append(np.sum(ps>-x) / self.N / self.m)
-        return np.array(p)
+        ps = np.sort(-np.array(ps))
+        values = np.arange(self.N + 1) / self.N
+        return ps, values

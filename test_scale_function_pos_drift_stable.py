@@ -13,7 +13,7 @@ def main():
     alpha = 1.6
     q = 0
     drift = 0.1
-    T = 1e6
+    T = 50
     epsilon = 0.001
     n_sticks = 30
     N = 1000
@@ -33,12 +33,12 @@ def main():
     R = np.linspace(0,10,20)
     ws = W.profile(R)
     # v1s = V1.profile(R)
-    v2s = V2.profile(R)
-    v3s = V3.profile(R)
+    x2s, v2s = V2.profile()
+    x3s, v3s = V3.profile()
     plt.plot(R, ws, label='W')
     # plt.plot(R, v1s, label='sampled W, inf interval')
-    plt.plot(R, v2s, label='sampled W, fixed interval')
-    plt.plot(R, v3s, label='sampled W, exp interval')
+    plt.plot(x2s, v2s, label='sampled W, fixed interval')
+    plt.plot(x3s, v3s, label='sampled W, exp interval')
     plt.title('Comparison of sampled W with the real W')
 
     plt.legend()

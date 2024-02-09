@@ -8,11 +8,12 @@ from random_variable.spectrally_negative_levy_random_variable import SpectrallyN
 class TemperedSpectrallyNegativeLevyRandomVariable(SpectrallyNegativeLevyRandomVariable):
     def __init__(self, c: float, mu: float, sigma: float, nu: Callable[..., Any], 
                  nu_unwarranted: Callable[..., Any] = None, 
-                 multiplier: float=1, 
+                 char_multiplier: float=1, 
+                 amplitude_multiplier: float=1,
                  max_jump_cutoff: float = 2 ** 12) -> None:
         assert sigma == 0
 
-        self._C = multiplier
+        self._char_multiplier = char_multiplier
         self.c = c
         tempered_mu = self.get_tempered_mu(mu, nu)
         if nu_unwarranted is not None:
@@ -21,7 +22,9 @@ class TemperedSpectrallyNegativeLevyRandomVariable(SpectrallyNegativeLevyRandomV
             tempered_nu_unwarranted = None
         tempered_nu = lambda x: np.exp(c * x) * nu(x)
         super().__init__(tempered_mu, sigma, tempered_nu, tempered_nu_unwarranted, 
-                         multiplier=multiplier, max_jump_cutoff=max_jump_cutoff)
+                         char_multiplier=char_multiplier, 
+                         amplitude_multiplier=amplitude_multiplier,
+                         max_jump_cutoff=max_jump_cutoff)
 
     def get_tempered_mu(self, mu: float, nu: Callable[..., Any]):
         # see for example Ch 9.5 of Financial Modelling with Jump Processes By Rama Cont, Peter Tankov

@@ -17,7 +17,7 @@ class SpectrallyNegativeLevyRandomProcess(RandomProcess):
                                                     self.sigma, 
                                                     lambda x: self.nu(x), 
                                                     lambda x: self.nu_unwarranted(x) if self.nu_unwarranted is not None else None, 
-                                                    multiplier=time,
+                                                    char_multiplier=time,
                                                     max_jump_cutoff=self.max_jump_cutoff)
 
     def characteristic_function(self, t: np.complex64, time: float, z: np.float64) -> np.complex64:

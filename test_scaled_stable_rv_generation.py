@@ -9,13 +9,13 @@ def main():
     N = 10000
     mult = 1
     c = 0
-    multiplier = 1000
+    char_multiplier = 1000
     
-    X = TotallySkewedStableRandomVariable(alpha, multiplier=multiplier)
+    X = TotallySkewedStableRandomVariable(alpha, char_multiplier=char_multiplier)
     s1 = X.sample(N)
-    Y = UntemperedTotallySkewedStableRandomVariable(alpha, multiplier=multiplier)
+    Y = UntemperedTotallySkewedStableRandomVariable(alpha, char_multiplier=char_multiplier)
     s2 = Y.sample(N*mult)
-    Z = TemperedTotallySkewedStableRandomVariable(c, alpha, multiplier=multiplier)
+    Z = TemperedTotallySkewedStableRandomVariable(c, alpha, char_multiplier=char_multiplier)
     s3 = Z.sample(N*mult)
 
     plt.plot(range(N), np.sort(s1), label='X')

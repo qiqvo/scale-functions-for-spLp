@@ -13,5 +13,8 @@ class TemperedTotallySkewedStableRandomProcess(SpectrallyNegativeLevyRandomProce
                          xi.nu_unwarranted, xi._max_jump_cutoff)
 
     def get_underlying_xi_for_time(self, time: float) -> TemperedTotallySkewedStableRandomVariable:
-        return TemperedTotallySkewedStableRandomVariable(self.c, self.alpha, time)
+        return TemperedTotallySkewedStableRandomVariable(self.c * time**(1/self.alpha), 
+                                                         self.alpha, 1, time**(1/self.alpha),
+                                                            # min_jump_cutoff=2**(-4),
+                                                            max_jump_cutoff=2**3)
     

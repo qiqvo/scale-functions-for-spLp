@@ -7,7 +7,9 @@ from random_variable.tempered_spectrally_negative_levy_random_variable import Te
 
 
 class TemperedTotallySkewedStableRandomVariable(TemperedSpectrallyNegativeLevyRandomVariable, DecreasingDensitySpectrallyNegativeLevyRandomVariable):
-    def __init__(self, c: float, alpha: float, multiplier: float=1, min_jump_cutoff: float = 2**(-5), max_jump_cutoff: float = 2 ** 12) -> None:
+    def __init__(self, c: float, alpha: float, char_multiplier: float=1, 
+                 amplitude_multiplier: float=1, 
+                 min_jump_cutoff: float = 2**(-5), max_jump_cutoff: float = 2 ** 12) -> None:
         self.alpha = alpha
         self._min_jump_cutoff = min_jump_cutoff
 
@@ -18,22 +20,25 @@ class TemperedTotallySkewedStableRandomVariable(TemperedSpectrallyNegativeLevyRa
         nu_unwarranted = lambda x: 1 / (-x)**(1 + self.alpha) / self._const
         nu = lambda x: nu_unwarranted(x) if x <= -self._min_jump_cutoff else 0
 
-        super().__init__(c, mu, 0, nu, nu_unwarranted, multiplier, max_jump_cutoff=max_jump_cutoff)
+        super().__init__(c, mu, 0, nu, nu_unwarranted, char_multiplier, amplitude_multiplier, max_jump_cutoff=max_jump_cutoff)
 
     def get_tempered_mu(self, mu: float, nu: Callable[..., Any]):
         # by computing the mean
         mu = scipy.integrate.quad(lambda x: np.exp(-self.c / x) * (x)**(self.alpha-2), 0, 1)[0] / self._const
-        mu += self.mean() / self._C 
+        mu += self.mean() / self._char_multiplier 
         return mu
 
     def mean(self):
-        return self._C * self.alpha * self.c ** (self.alpha - 1)
+        return self._char_multiplier * self.alpha * self.c ** (self.alpha - 1)
 
     def psi(self, t: np.float64) -> np.float64:
-        return self._C * ((t + self.c)**self.alpha - (self.c)**self.alpha)
+        t *= self.amplitude_multiplier
+        return self._char_multiplier * ((t + self.c)**self.alpha - (self.c)**self.alpha)
     
     def phi(self, q:np.float64, a:np.float64=0, b:np.float64=2**10) -> np.float64:
-        return np.power((self.c)**self.alpha + q, 1/self.alpha) - self.c
+        res = np.power((self.c)**self.alpha + q/self._char_multiplier, 1/self.alpha) - self.c
+        res /= self.amplitude_multiplier
+        return res
 
     def get_min_jump_size(self):
         return self._min_jump_cutoff
@@ -43,8 +48,10 @@ class TemperedTotallySkewedStableRandomVariable(TemperedSpectrallyNegativeLevyRa
 
 
 class UntemperedTotallySkewedStableRandomVariable(TemperedTotallySkewedStableRandomVariable):
-    def __init__(self, alpha: float, multiplier: float=1, min_jump_cutoff: float = 2 ** (-5), max_jump_cutoff: float = 2 ** 12) -> None:
-        super().__init__(0, alpha, multiplier, min_jump_cutoff, max_jump_cutoff)
+    def __init__(self, alpha: float, char_multiplier: float=1, 
+                 amplitude_multiplier:float = 1, 
+                 min_jump_cutoff: float = 2 ** (-5), max_jump_cutoff: float = 2 ** 12) -> None:
+        super().__init__(0, alpha, char_multiplier, amplitude_multiplier, min_jump_cutoff, max_jump_cutoff)
 
     def get_tempered_mu(self, mu: float, nu: Callable[..., Any]):
         return mu
