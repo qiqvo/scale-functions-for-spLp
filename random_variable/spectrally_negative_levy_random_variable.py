@@ -27,10 +27,11 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
         self.nu_unwarranted = nu_unwarranted 
 
         self._max_jump_cutoff = max_jump_cutoff
+        self._max_intensity_over_ab = 1000
         self.nu_compensation = self.get_nu_compensation()
         
-    def get_nu_compensation(self):
-        nu_compensation = scipy.integrate.quad(lambda x: x * self.nu(x), -1, 0)[0]
+    def get_nu_compensation(self, a:float=-1, b:float=0):
+        nu_compensation = scipy.integrate.quad(lambda x: x * self.nu(x), a, b)[0]
         return nu_compensation
 
     # TODO: finish up
@@ -82,11 +83,11 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
         return 0
     
     def get_shifted_sigma(self):
-        return self.sigma 
+        return self.sigma
 
     def sample(self, N: int) -> np.ndarray[float]:
         shifted_sigma = self.get_shifted_sigma()
-        s = self.rng.normal(self.mu, shifted_sigma, N) * self._C
+        s = self.rng.normal(self.mu * self._C, shifted_sigma * np.sqrt(self._C), N)
 
         a, b = self.get_min_jump_size(), 1
         while a < self._max_jump_cutoff:
@@ -94,8 +95,14 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
                 b = self._max_jump_cutoff
 
             # simulate Pois with intensity nu on [-b, -a]
+            # adjusting the level b so that Pois intensity is smaller than self._max_intensity_over_ab 
             interval_max = self.max_abs_nu_on_interval(-b, -a)
-            P = self.rng.poisson(interval_max * (b - a) * self._C, N)
+            nu_ab = interval_max * (b - a) * self._C
+            while nu_ab > self._max_intensity_over_ab:
+                b = (b + a) / 2
+                interval_max = self.max_abs_nu_on_interval(-b, -a)
+                nu_ab = interval_max * (b - a) * self._C
+            P = self.rng.poisson(nu_ab, N)
             
             for i in range(N):
                 Ts = self.rng.uniform(0, interval_max, P[i])
@@ -108,7 +115,7 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
                 
                 s[i] += np.sum(js)
                 # compensated measure
-                if b == 1:
+                if a == self.get_min_jump_size():
                     s[i] -= self.nu_compensation * self._C 
             a, b = b, b*2
         return s

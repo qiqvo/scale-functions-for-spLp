@@ -12,6 +12,7 @@ class TemperedSpectrallyNegativeLevyRandomVariable(SpectrallyNegativeLevyRandomV
                  max_jump_cutoff: float = 2 ** 12) -> None:
         assert sigma == 0
 
+        self._C = multiplier
         self.c = c
         tempered_mu = self.get_tempered_mu(mu, nu)
         if nu_unwarranted is not None:
@@ -26,7 +27,3 @@ class TemperedSpectrallyNegativeLevyRandomVariable(SpectrallyNegativeLevyRandomV
         # see for example Ch 9.5 of Financial Modelling with Jump Processes By Rama Cont, Peter Tankov
         tempered_mu = mu + scipy.integrate.quad(lambda x: x * (np.exp(self.c * x) - 1) * nu(x), -1, 0)[0] 
         return tempered_mu
-
-    def mean(self):
-        return self.alpha * self.c ** (self.alpha - 1)
-    

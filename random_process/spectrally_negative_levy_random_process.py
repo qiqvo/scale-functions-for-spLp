@@ -13,11 +13,12 @@ class SpectrallyNegativeLevyRandomProcess(RandomProcess):
         self.max_jump_cutoff = max_jump_cutoff
 
     def get_underlying_xi_for_time(self, time: float) -> SpectrallyNegativeLevyRandomVariable:
-        return SpectrallyNegativeLevyRandomVariable(time * self.mu, 
-                                                    np.sqrt(time) * self.sigma, 
-                                                    lambda x: time * self.nu(x), 
-                                                    lambda x: time * self.nu_unwarranted(x) if self.nu_unwarranted is not None else None, 
-                                                    self.max_jump_cutoff)
+        return SpectrallyNegativeLevyRandomVariable(self.mu, 
+                                                    self.sigma, 
+                                                    lambda x: self.nu(x), 
+                                                    lambda x: self.nu_unwarranted(x) if self.nu_unwarranted is not None else None, 
+                                                    multiplier=time,
+                                                    max_jump_cutoff=self.max_jump_cutoff)
 
     def characteristic_function(self, t: np.complex64, time: float, z: np.float64) -> np.complex64:
         return self.get_underlying_xi_for_time(time).characteristic_function(t) * np.exp(1j * z * t)
