@@ -29,7 +29,7 @@ class SBScaleFunction(ScaleFunction):
         return self.process.get_underlying_xi_for_time(1).phi(q)
     
     def resample(self):
-        self.stick_breaking_samples = self.stick_breaking_process.sample(self.N)
+        self.stick_breaking_samples = self.stick_breaking_representation.sample(self.N)
 
     def value(self, x: float):
         ps = []

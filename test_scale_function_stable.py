@@ -4,8 +4,9 @@ import numpy as np
 from random_process.pos_drift_skewed_stable_random_process import PosDriftTotallySkewedStableRandomProcess
 from scale_function.pos_drift_stable_scale_function import PosDriftTotallySkewedStableScaleFunction
 from scale_function.sb_scale_function import SBScaleFunction
-from stick_breaking_representation.fixed_interval_stick_breaking_representation import FixedIntervalStickBreakingRepresentation
+from stick_breaking_representation.fixed_interval_stick_breaking_representation import ExpIntervalStickBreakingRepresentation, FixedIntervalStickBreakingRepresentation
 from stick_breaking_representation.inf_interval_stick_breaking_representation import InfIntervalStickBreakingRepresentation
+from stick_breaking_representation.stick_breaking_representation_factory import StickBreakingRepresentationFactory
 
 
 def main():
@@ -20,10 +21,10 @@ def main():
     X = PosDriftTotallySkewedStableRandomProcess(alpha, drift)
     W = PosDriftTotallySkewedStableScaleFunction(q, X)
 
-    P1 = InfIntervalStickBreakingRepresentation(X, epsilon)
-    P2 = FixedIntervalStickBreakingRepresentation(X, T, n_sticks)
-    # P4 = FixedIntervalStickBreakingProcess(X, T, n_sticks * 2)
-    # P3 = ExpIntervalStickBreakingProcess(X, 1/T, n_sticks)
+    P1 = StickBreakingRepresentationFactory(InfIntervalStickBreakingRepresentation, epsilon=epsilon)
+    P2 = StickBreakingRepresentationFactory(FixedIntervalStickBreakingRepresentation, T=T, n_sticks=n_sticks)
+    # P3 = StickBreakingRepresentationFactory(ExpIntervalStickBreakingRepresentation, theta=1/T, n_sticks=n_sticks)
+    # P4 = StickBreakingRepresentationFactory(FixedIntervalStickBreakingRepresentation, T=T, n_sticks=n_sticks)
 
     V1 = SBScaleFunction(q, X, P1, N)
     V2 = SBScaleFunction(q, X, P2, N)

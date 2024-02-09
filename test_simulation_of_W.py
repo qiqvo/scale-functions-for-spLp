@@ -4,6 +4,7 @@ from random_process.pos_drift_skewed_stable_random_process import PosDriftTotall
 from scale_function.sb_scale_function import SBScaleFunction
 from stick_breaking_representation.fixed_interval_stick_breaking_representation import ExpIntervalStickBreakingRepresentation, FixedIntervalStickBreakingRepresentation
 from stick_breaking_representation.inf_interval_stick_breaking_representation import InfIntervalStickBreakingRepresentation
+from stick_breaking_representation.stick_breaking_representation_factory import StickBreakingRepresentationFactory
 
 
 def main():
@@ -17,9 +18,10 @@ def main():
 
     X = PosDriftTotallySkewedStableRandomProcess(alpha, drift)
 
-    P1 = InfIntervalStickBreakingRepresentation(X, epsilon)
-    P2 = FixedIntervalStickBreakingRepresentation(X, T, n_sticks)
-    P3 = ExpIntervalStickBreakingRepresentation(X, 1/T, n_sticks)
+    P1 = StickBreakingRepresentationFactory(InfIntervalStickBreakingRepresentation, epsilon=epsilon)
+    P2 = StickBreakingRepresentationFactory(FixedIntervalStickBreakingRepresentation, T=T, n_sticks=n_sticks)
+    P3 = StickBreakingRepresentationFactory(ExpIntervalStickBreakingRepresentation, theta=1/T, n_sticks=n_sticks)
+    # P4 = StickBreakingRepresentationFactory(FixedIntervalStickBreakingRepresentation, T=T, n_sticks=n_sticks)
 
     R = range(100,1100,100)
     for j in range(10, 15):
