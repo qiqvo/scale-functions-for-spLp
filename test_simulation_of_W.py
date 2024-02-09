@@ -10,35 +10,31 @@ from stick_breaking_representation.stick_breaking_representation_factory import 
 def main():
     alpha = 1.6
     drift = 0.1
-    T = 1000
-    epsilon = 0.001
-    n_sticks = 20
+    n_sticks = 30
     q = 0
-    N = 1000
 
     X = PosDriftTotallySkewedStableRandomProcess(alpha, drift)
 
-    P1 = StickBreakingRepresentationFactory(InfIntervalStickBreakingRepresentation, epsilon=epsilon)
-    P2 = StickBreakingRepresentationFactory(FixedIntervalStickBreakingRepresentation, T=T, n_sticks=n_sticks)
-    P3 = StickBreakingRepresentationFactory(ExpIntervalStickBreakingRepresentation, theta=1/T, n_sticks=n_sticks)
-    # P4 = StickBreakingRepresentationFactory(FixedIntervalStickBreakingRepresentation, T=T, n_sticks=n_sticks)
-
     R = range(100,1100,100)
-    for j in range(10, 15):
+    for j in range(2, 7):
         epsilon = 0.1**j
-        W1 = SBScaleFunction(q, X, P1, N)
-        W2 = SBScaleFunction(q, X, P2, N)
-        W3 = SBScaleFunction(q, X, P3, N)
-        
+
+        P1 = StickBreakingRepresentationFactory(InfIntervalStickBreakingRepresentation, epsilon=epsilon)
+        P2 = StickBreakingRepresentationFactory(FixedIntervalStickBreakingRepresentation, T=1/epsilon, n_sticks=n_sticks)
+        P3 = StickBreakingRepresentationFactory(ExpIntervalStickBreakingRepresentation, theta=epsilon, n_sticks=n_sticks)
+        # P4 = StickBreakingRepresentationFactory(FixedIntervalStickBreakingRepresentation, T=T, n_sticks=n_sticks)
+
         w1,w2,w3 = [],[],[]
         for i in R:
+            W1 = SBScaleFunction(q, X, P1, i)
+            W2 = SBScaleFunction(q, X, P2, i)
+            W3 = SBScaleFunction(q, X, P3, i)
             # np.random.seed(0)
             # w1.append(W1.value(10))
-            np.random.seed(0)
-            # w2.append(W2.value(10))
+            w2.append(W2.value(10))
             w3.append(W3.value(10))
         # plt.plot(R, w1, label=f'eps={'%.2E' % epsilon}')
-        # plt.plot(R, w2, label=f'eps={'%.2E' % epsilon}')
+        plt.plot(R, w2, label=f'eps={'%.2E' % epsilon}')
         plt.plot(R, w3, label=f'eps={'%.2E' % epsilon}')
     plt.plot([R[0], R[-1]], [3.3133, 3.3133], c='r')
     plt.legend()
