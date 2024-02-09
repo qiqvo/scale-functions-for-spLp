@@ -25,11 +25,6 @@ class TemperedSpectrallyNegativeLevyRandomVariable(SpectrallyNegativeLevyRandomV
 
     def mean(self):
         return self.alpha * self.c ** (self.alpha - 1)
-
-    # TODO:
-    def laplace_transform(self, t: np.float64) -> np.float64:
-        # return np.exp((t + self.c) - (self.c)**self.alpha)
-        return None
     
 
 def create_from_snl_rv(x: SpectrallyNegativeLevyRandomVariable, c: float) -> TemperedSpectrallyNegativeLevyRandomVariable:

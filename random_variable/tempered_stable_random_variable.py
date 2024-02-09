@@ -29,8 +29,11 @@ class TemperedTotallySkewedStableRandomVariable(TemperedSpectrallyNegativeLevyRa
     def mean(self):
         return self.alpha * self.c ** (self.alpha - 1)
 
-    def laplace_transform(self, t: np.float64) -> np.float64:
-        return np.exp((t + self.c)**self.alpha - (self.c)**self.alpha)
+    def psi(self, t: np.float64) -> np.float64:
+        return (t + self.c)**self.alpha - (self.c)**self.alpha
+    
+    def phi(self, q:np.float64, a:np.float64=0, b:np.float64=2**10) -> np.float64:
+        return np.power((self.c)**self.alpha + q, 1/self.alpha) - self.c
 
     def get_min_jump_size(self):
         return self._min_jump_cutoff

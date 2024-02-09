@@ -12,6 +12,9 @@ class TotallySkewedStableRandomProcess(SpectrallyNegativeLevyRandomProcess):
         super().__init__(self.xi.mu, self.xi.sigma, self.xi.nu, 
                          self.xi.nu_unwarranted, self.xi._max_jump_cutoff)
 
+    def get_underlying_xi_for_time(self, time: float) -> TotallySkewedStableRandomVariable:
+        return TotallySkewedStableRandomVariable(self.alpha)
+    
     def characteristic_function(self, t: np.complex64, time: float, z: np.float64) -> np.complex64:
         return self.xi.characteristic_function(t * np.power(time, 1/self.alpha)) * np.exp(1j * z * t)
 
