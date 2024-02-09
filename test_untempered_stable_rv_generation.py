@@ -14,7 +14,7 @@ def main():
     s1 = X.sample(N)
     Y = UntemperedTotallySkewedStableRandomVariable(alpha)
     s2 = Y.sample(N*mult)
-    Z = TemperedTotallySkewedStableRandomVariable(alpha, c)
+    Z = TemperedTotallySkewedStableRandomVariable(c, alpha)
     s3 = Z.sample(N*mult)
 
     plt.plot(range(N), np.sort(s1), label='X')

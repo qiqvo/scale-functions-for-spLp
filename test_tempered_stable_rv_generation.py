@@ -12,12 +12,12 @@ def main():
     
     X = TotallySkewedStableRandomVariable(alpha)
     s1 = X.sample(N)
-    Y = TemperedTotallySkewedStableRandomVariable(alpha, 0)
+    Y = TemperedTotallySkewedStableRandomVariable(0, alpha)
     s2 = Y.sample(N*mult)
     Z = UntemperedTotallySkewedStableRandomVariable(alpha)
     s3 = Z.sample(N*mult)
 
-    W = TemperedTotallySkewedStableRandomVariable(alpha, c)
+    W = TemperedTotallySkewedStableRandomVariable(c, alpha)
     s4 = W.sample(N*mult)
 
     plt.plot(range(N), np.sort(s1), label='X')
