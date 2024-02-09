@@ -14,9 +14,13 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
     #             + lambda^2 sigma^2/2 
     #             + \int_-infty^0 (e^{lambda x} - 1 - lambda x 1_{x>-1}) nu(dx))
     # and nu(dx) is finite!
-    def __init__(self, mu: float, sigma: float, nu: Callable, nu_unwarranted: Callable=None, max_jump_cutoff:float=2**12) -> None:
+    def __init__(self, mu: float, sigma: float, nu: Callable, 
+                 nu_unwarranted: Callable=None, 
+                 multiplier: float=1, 
+                 max_jump_cutoff:float=2**12) -> None:
         self.rng = np.random.default_rng(seed=seed)
 
+        self._C = multiplier
         self.mu = mu
         self.sigma = sigma
         self.nu = nu
@@ -41,7 +45,7 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
         res = - t * self.mu + t*t*self.sigma*self.sigma / 2
         res += scipy.integrate.quad(lambda x: (np.exp(t*x) - 1) * self.nu(x), -np.infty, -1)[0]
         res += scipy.integrate.quad(lambda x: (np.exp(t*x) - 1 - t*x) * self.nu(x), -1, 0)[0]
-        return res
+        return res * self._C
     
     def phi(self, q:np.float64, a:np.float64=0, b:np.float64=2**10) -> np.float64:
         # if find_min:
@@ -78,11 +82,11 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
         return 0
     
     def get_shifted_sigma(self):
-        return self.sigma
+        return self.sigma 
 
     def sample(self, N: int) -> np.ndarray[float]:
         shifted_sigma = self.get_shifted_sigma()
-        s = self.rng.normal(self.mu, shifted_sigma, N)
+        s = self.rng.normal(self.mu, shifted_sigma, N) * self._C
 
         a, b = self.get_min_jump_size(), 1
         while a < self._max_jump_cutoff:
@@ -90,8 +94,8 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
                 b = self._max_jump_cutoff
 
             # simulate Pois with intensity nu on [-b, -a]
-            interval_max = self.max_abs_nu_on_interval(-b, -a) 
-            P = self.rng.poisson(interval_max * (b - a), N)
+            interval_max = self.max_abs_nu_on_interval(-b, -a)
+            P = self.rng.poisson(interval_max * (b - a) * self._C, N)
             
             for i in range(N):
                 Ts = self.rng.uniform(0, interval_max, P[i])
@@ -105,7 +109,7 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
                 s[i] += np.sum(js)
                 # compensated measure
                 if b == 1:
-                    s[i] -= self.nu_compensation
+                    s[i] -= self.nu_compensation * self._C 
             a, b = b, b*2
         return s
         
