@@ -1,33 +1,32 @@
 import numpy as np
 from numpy import ndarray
-from numpy.core.multiarray import array as array
-from random_process.random_process import RandomProcess
+
+from random_process.spectrally_negative_levy_random_process import SpectrallyNegativeLevyRandomProcess
+from random_process.tempered_spectrally_negative_levy_random_process import create_from_snl_process
 from scale_function.scale_function import ScaleFunction
-from stick_breaking_representation.stick_breaking_representation import StickBreakingRepresentation
+from stick_breaking_representation.stick_breaking_representation_factory import StickBreakingRepresentationFactory
 
 
 class SBScaleFunction(ScaleFunction):
     """
     Scale function via Stick breaking process. 
     """
-    def __init__(self, q: float, process: RandomProcess, 
-                 stick_breaking_process: StickBreakingRepresentation,
+    def __init__(self, q: float, process: SpectrallyNegativeLevyRandomProcess, 
+                 stick_breaking_representation_factory: StickBreakingRepresentationFactory,
                  N: int) -> None:
         super().__init__(q, process)
-        
-        self.stick_breaking_process = stick_breaking_process 
+
+        if (self.q > 0 or (self.m < 0 and self.q == 0)):
+            self.original_process = self.process
+            self.c = self.get_c(self.q)
+            self.process = create_from_snl_process(self.process, self.c)
+
+        self.stick_breaking_representation = stick_breaking_representation_factory.create(self.process) 
         self.N = N
         self.resample()
 
-    # def _setup(self) -> None:
-    #     if not (self.q > 0 or (self.m < 0 and self.q == 0)):
-    #         return None
-    #     self.original_process = self.process
-    #     self.original_q = self.q
-    #     self.original_m = self.m
-
-    #     c = 
-    #     self.process = 
+    def get_c(self, q):
+        return self.process.get_underlying_xi_for_time(1).phi(q)
     
     def resample(self):
         self.stick_breaking_samples = self.stick_breaking_process.sample(self.N)
