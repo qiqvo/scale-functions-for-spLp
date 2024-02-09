@@ -6,10 +6,10 @@ from random_variable.random_variable import RandomVariable
 from random_variable.tempered_stable_random_variable import UntemperedTotallySkewedStableRandomVariable
 
 class SkewedStableRandomVariable(RandomVariable):
-    def __init__(self, alpha: float, beta: float, c:float=1) -> None:
+    def __init__(self, alpha: float, beta: float, multiplier:float=1) -> None:
         self.rng = np.random.default_rng(seed=seed)
         
-        self._C = c
+        self._C = multiplier
         self.alpha = alpha
         self.beta = beta
         self._k = 1 - abs(1 - self.alpha)
@@ -50,14 +50,14 @@ class SkewedStableRandomVariable(RandomVariable):
     
 
 class TotallySkewedStableRandomVariable(SkewedStableRandomVariable, UntemperedTotallySkewedStableRandomVariable):
-    def __init__(self, alpha: float, c:float=1) -> None:
-        super().__init__(alpha, -1 if alpha < 1 else 1, c)
-        super(SkewedStableRandomVariable, self).__init__(alpha)
+    def __init__(self, alpha: float, multiplier:float=1) -> None:
+        super().__init__(alpha, -1 if alpha < 1 else 1, multiplier)
+        super(SkewedStableRandomVariable, self).__init__(alpha, multiplier)
 
     def laplace_transform(self, t: np.float64) -> np.float64:
         return np.exp(self._C * np.sign(self.alpha - 1) * (t)**self.alpha)
     
 
 class SymmetricStableRandomVariable(SkewedStableRandomVariable):
-    def __init__(self, alpha: float, c:float=1) -> None:
-        super().__init__(alpha, 0, c)
+    def __init__(self, alpha: float, multiplier:float = 1) -> None:
+        super().__init__(alpha, 0, multiplier)

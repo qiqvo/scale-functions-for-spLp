@@ -7,7 +7,7 @@ from random_variable.tempered_spectrally_negative_levy_random_variable import Te
 
 
 class TemperedTotallySkewedStableRandomVariable(TemperedSpectrallyNegativeLevyRandomVariable, DecreasingDensitySpectrallyNegativeLevyRandomVariable):
-    def __init__(self, alpha: float, c: float, multiplier: float=1, min_jump_cutoff: float = 2**(-5), max_jump_cutoff: float = 2 ** 12) -> None:
+    def __init__(self, c: float, alpha: float, multiplier: float=1, min_jump_cutoff: float = 2**(-5), max_jump_cutoff: float = 2 ** 12) -> None:
         self.alpha = alpha
         self._min_jump_cutoff = min_jump_cutoff
 
@@ -18,7 +18,7 @@ class TemperedTotallySkewedStableRandomVariable(TemperedSpectrallyNegativeLevyRa
         nu_unwarranted = lambda x: 1 / (-x)**(1 + self.alpha) / self._const
         nu = lambda x: nu_unwarranted(x) if x <= -self._min_jump_cutoff else 0
 
-        super().__init__(c, mu, 0, nu, nu_unwarranted, max_jump_cutoff=max_jump_cutoff)
+        super().__init__(c, mu, 0, nu, nu_unwarranted, multiplier, max_jump_cutoff=max_jump_cutoff)
 
     def get_tempered_mu(self, mu: float, nu: Callable[..., Any]):
         # by computing the mean
@@ -44,7 +44,7 @@ class TemperedTotallySkewedStableRandomVariable(TemperedSpectrallyNegativeLevyRa
 
 class UntemperedTotallySkewedStableRandomVariable(TemperedTotallySkewedStableRandomVariable):
     def __init__(self, alpha: float, multiplier: float=1, min_jump_cutoff: float = 2 ** (-5), max_jump_cutoff: float = 2 ** 12) -> None:
-        super().__init__(alpha, 0, multiplier, min_jump_cutoff, max_jump_cutoff)
+        super().__init__(0, alpha, multiplier, min_jump_cutoff, max_jump_cutoff)
 
     def get_tempered_mu(self, mu: float, nu: Callable[..., Any]):
         return mu
