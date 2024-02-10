@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 from typing import Callable
 import numpy as np
 
+from random_variable.random_variable import RandomVariable
+
 
 class RandomProcess(ABC):
     def __init__(self) -> None:
@@ -29,4 +31,8 @@ class RandomProcess(ABC):
     
     @abstractmethod
     def sample_function(self, N: int, theta: Callable, time: float, z: np.float64) -> np.ndarray[float]:
+        return None
+    
+    @abstractmethod
+    def get_underlying_xi_for_time(self, time: float) -> RandomVariable:
         return None
