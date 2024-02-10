@@ -5,7 +5,7 @@ from scipy import optimize
 
 
 class RandomVariable(ABC):
-    _interval_a = 0
+    _interval_a = 0 
     _interval_b = 1e10 
 
     def __init__(self) -> None:
@@ -42,6 +42,7 @@ class RandomVariable(ABC):
         return None
 
     # TODO: finish: 
+    @abstractmethod
     def sample(self, N: int) -> np.ndarray[float]:
         # if self._table is None:
         #     self._table = {}
