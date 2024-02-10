@@ -31,12 +31,15 @@ class InfIntervalStickBreakingRepresentation(StickBreakingRepresentation):
 
     def sample(self, N: int) -> np.ndarray:
         P = self.rng.poisson(self.M, N)
-        s = []
-        for n in P:
-            ls = np.power(self._eps, np.random.uniform(-1, 1, n))
+        s = np.zeros((N, 2, np.max(P)))
+
+        for i in range(N):
+            n = P[i]
+            ls = np.power(self._eps, self.rng.uniform(-1, 1, n))
             xis = []
             for l in ls:
                 xi = self.process.sample(1, l, 0)[0]
                 xis.append(xi)
-            s.append((ls[:], np.array(xis)))
+            s[i,0,:n] = ls[:]
+            s[i,1,:n] = np.array(xis)
         return s
