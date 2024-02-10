@@ -1,6 +1,7 @@
 from matplotlib import pyplot as plt
 import numpy as np
-from random_process.pos_drift_skewed_stable_random_process import PosDriftTotallySkewedStableRandomProcess
+from random_process.drift_random_process import DriftRandomProcess
+from random_process.skewed_stable_random_process import TotallySkewedStableRandomProcess
 from scale_function.sb_scale_function import SBScaleFunction
 from stick_breaking_representation.fixed_interval_stick_breaking_representation import ExpIntervalStickBreakingRepresentation, FixedIntervalStickBreakingRepresentation
 from stick_breaking_representation.inf_interval_stick_breaking_representation import InfIntervalStickBreakingRepresentation
@@ -13,7 +14,8 @@ def main():
     n_sticks = 30
     q = 0
 
-    X = PosDriftTotallySkewedStableRandomProcess(alpha, drift)
+    Y = TotallySkewedStableRandomProcess(alpha)
+    X = DriftRandomProcess(alpha, Y)
 
     R = range(100,1100,100)
     for j in range(2, 7):

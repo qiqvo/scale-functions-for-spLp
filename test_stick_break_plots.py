@@ -1,13 +1,15 @@
 from matplotlib import pyplot as plt
-from random_process.pos_drift_skewed_stable_random_process import PosDriftTotallySkewedStableRandomProcess
+from random_process.drift_random_process import DriftRandomProcess
+from random_process.skewed_stable_random_process import TotallySkewedStableRandomProcess
 from stick_breaking_representation.inf_interval_stick_breaking_representation import InfIntervalStickBreakingRepresentation
 
 
 def main():
     alpha = 1.2
     epsilon = 0.001
-
-    X = PosDriftTotallySkewedStableRandomProcess(alpha, 0.1)
+    drift = 0.1
+    Y = TotallySkewedStableRandomProcess(alpha)
+    X = DriftRandomProcess(drift, Y)
     sbr = InfIntervalStickBreakingRepresentation(X, epsilon)
 
     m = 3
