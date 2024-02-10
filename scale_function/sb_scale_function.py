@@ -20,6 +20,8 @@ class SBScaleFunction(ScaleFunction):
             self.c = self.compute_c(self.q)
             self.process = create_tempered(self.process, self.c)
             self.m = self.process.mean(1, 0)
+        else:
+            self.c = None
 
         self.stick_breaking_representation = stick_breaking_representation_factory.create(self.process) 
         self.N = N
@@ -45,6 +47,8 @@ class SBScaleFunction(ScaleFunction):
             ps.append(x_i > -x)
         
         p = np.sum(ps) / self.N
+        if self.c is not None: 
+            p *= np.exp(self.c * x)
         return p / self.m
 
     def profile(self, a: float, b: float) -> tuple[np.ndarray, np.ndarray]:
@@ -57,4 +61,9 @@ class SBScaleFunction(ScaleFunction):
         ps = np.sort(-np.array(ps))
         rs = (ps <= b) & (ps >= a)
         values = np.arange(1, self.N + 1) / self.N / self.m
-        return ps[rs], values[rs]
+
+        ps, values = ps[rs], values[rs]
+        if self.c is not None: 
+            values *= np.exp(self.c * ps)
+        
+        return ps, values
