@@ -1,4 +1,6 @@
 import numpy as np
+
+from settings import seed
 from random_process.random_process import RandomProcess
 
 from stick_breaking_representation.stick_breaking_representation import StickBreakingRepresentation
@@ -6,6 +8,7 @@ from stick_breaking_representation.stick_breaking_representation import StickBre
 class FixedIntervalStickBreakingRepresentation(StickBreakingRepresentation):
     def __init__(self, process: RandomProcess, T: float, n_sticks: int) -> None:
         super().__init__(process)
+        self.rng = np.random.default_rng(seed=seed)
         self._T = T
         self._n_sticks = n_sticks
     
@@ -26,7 +29,7 @@ class FixedIntervalStickBreakingRepresentation(StickBreakingRepresentation):
             l = self.get_T()
             n = 0
             while n < self._n_sticks:
-                ls.append(l * np.random.uniform(0, 1))
+                ls.append(l * self.rng.uniform(0, 1))
                 l = ls[-1]
                 xi = self.process.sample(1, l, 0)[0]
                 xis.append(xi)
