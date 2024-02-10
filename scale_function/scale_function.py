@@ -14,11 +14,13 @@ class ScaleFunction(ABC):
         return None
     
     @abstractmethod
-    def profile(self, range_x: np.array) -> np.ndarray:
+    def profile(self, a: float, b: float) -> tuple[np.ndarray, np.ndarray]:
         return None
 
 
 class AnalyticalScaleFunction(ScaleFunction):
-    def profile(self, range_x: np.array) -> np.ndarray:
-        return np.array([self.value(x) for x in range_x])
+    def profile(self, a: float, b: float) -> tuple[np.ndarray, np.ndarray]:
+        xs = np.linspace(a, b, endpoint=True)
+        values = np.array([self.value(x) for x in xs])
+        return xs, values
     

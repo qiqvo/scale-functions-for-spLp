@@ -1,5 +1,4 @@
 import numpy as np
-from numpy import ndarray
 
 from random_process.spectrally_negative_levy_random_process import SpectrallyNegativeLevyRandomProcess
 from random_process.tempered_random_process_factory import create_tempered
@@ -48,15 +47,14 @@ class SBScaleFunction(ScaleFunction):
         p = np.sum(ps) / self.N
         return p / self.m
 
-    def profile(self) -> ndarray:
+    def profile(self, a: float, b: float) -> tuple[np.ndarray, np.ndarray]:
         if self.stick_breaking_samples is None:
             self.resample()
 
-        ps = [0]
-        for i in range(self.N):
-            xis = self.stick_breaking_samples[i][1]
-            x_i = np.sum(xis, where=xis < 0)
-            ps.append(x_i)
+        ps = np.sum(self.stick_breaking_samples[:,1], 
+                    where=self.stick_breaking_samples[:,1] < 0, 
+                    axis=1)
         ps = np.sort(-np.array(ps))
-        values = np.arange(self.N + 1) / self.N
-        return ps, values
+        rs = (ps <= b) & (ps >= a)
+        values = np.arange(1, self.N + 1) / self.N / self.m
+        return ps[rs], values[rs]

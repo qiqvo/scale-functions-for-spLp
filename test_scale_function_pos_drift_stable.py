@@ -13,7 +13,7 @@ def main():
     alpha = 1.6
     q = 0
     drift = 0.1
-    T = 50
+    T = 1e6
     epsilon = 0.001
     n_sticks = 30
     N = 1000
@@ -30,12 +30,11 @@ def main():
     V2 = SBScaleFunction(q, X, P2, N)
     V3 = SBScaleFunction(q, X, P3, N)
 
-    R = np.linspace(0,10,20)
-    ws = W.profile(R)
-    # v1s = V1.profile(R)
-    x2s, v2s = V2.profile()
-    x3s, v3s = V3.profile()
-    plt.plot(R, ws, label='W')
+    xs, ws = W.profile(0, 10)
+    # v1s = V1.profile(0, 10)
+    x2s, v2s = V2.profile(0, 10)
+    x3s, v3s = V3.profile(0, 10)
+    plt.plot(xs, ws, label='W')
     # plt.plot(R, v1s, label='sampled W, inf interval')
     plt.plot(x2s, v2s, label='sampled W, fixed interval')
     plt.plot(x3s, v3s, label='sampled W, exp interval')
