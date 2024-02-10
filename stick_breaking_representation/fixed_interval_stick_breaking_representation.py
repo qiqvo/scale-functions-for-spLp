@@ -43,4 +43,4 @@ class ExpIntervalStickBreakingRepresentation(FixedIntervalStickBreakingRepresent
         super().__init__(process, 1/theta, n_sticks)
 
     def get_T(self):
-        return np.random.exponential(self._T, 1)[0]
+        return self.rng.exponential(self._T, 1)[0]
