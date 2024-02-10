@@ -13,29 +13,29 @@ def main():
     alpha = 1.6
     q = 0
     drift = 0.1
-    T = 1e6
-    epsilon = 0.001
+    T = 1e5
+    epsilon = 1/T
     n_sticks = 30
     N = 1000
 
     X = PosDriftTotallySkewedStableRandomProcess(alpha, drift)
     W = PosDriftTotallySkewedStableScaleFunction(q, X)
 
-    # P1 = StickBreakingRepresentationFactory(InfIntervalStickBreakingRepresentation, epsilon=epsilon)
+    P1 = StickBreakingRepresentationFactory(InfIntervalStickBreakingRepresentation, epsilon=epsilon)
     P2 = StickBreakingRepresentationFactory(FixedIntervalStickBreakingRepresentation, T=T, n_sticks=n_sticks)
     P3 = StickBreakingRepresentationFactory(ExpIntervalStickBreakingRepresentation, theta=1/T, n_sticks=n_sticks)
-    # P4 = StickBreakingRepresentationFactory(FixedIntervalStickBreakingRepresentation, T=T, n_sticks=n_sticks)
 
-    # V1 = SBScaleFunction(q, X, P1, N)
+    V1 = SBScaleFunction(q, X, P1, N)
     V2 = SBScaleFunction(q, X, P2, N)
     V3 = SBScaleFunction(q, X, P3, N)
 
-    xs, ws = W.profile(0, 10)
-    # v1s = V1.profile(0, 10)
-    x2s, v2s = V2.profile(0, 10)
-    x3s, v3s = V3.profile(0, 10)
+    a, b = 0, 3
+    xs, ws = W.profile(a, b)
+    x1s, v1s = V1.profile(a, b)
+    x2s, v2s = V2.profile(a, b)
+    x3s, v3s = V3.profile(a, b)
     plt.plot(xs, ws, label='W')
-    # plt.plot(R, v1s, label='sampled W, inf interval')
+    plt.plot(x1s, v1s, label='sampled W, inf interval')
     plt.plot(x2s, v2s, label='sampled W, fixed interval')
     plt.plot(x3s, v3s, label='sampled W, exp interval')
     plt.title('Comparison of sampled W with the real W')
