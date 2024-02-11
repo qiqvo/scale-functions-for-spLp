@@ -4,9 +4,9 @@ from random_process.spectrally_negative_levy_random_process import SpectrallyNeg
 from random_process.tempered_skewed_stable_random_process import TemperedTotallySkewedStableRandomProcess
 from random_process.tempered_spectrally_negative_levy_random_process import TemperedSpectrallyNegativeLevyRandomProcess
 
-def create_tempered(x: SpectrallyNegativeLevyRandomProcess, c: float):
+def create_tempered(c: float, x: SpectrallyNegativeLevyRandomProcess):
     if isinstance(x, DriftRandomProcess) and isinstance(x.process, TotallySkewedStableRandomProcess):
-        process = create_tempered(x.process)
+        process = create_tempered(c, x.process)
         return DriftRandomProcess(x.drift, process)
     if isinstance(x, TotallySkewedStableRandomProcess):
         return TemperedTotallySkewedStableRandomProcess(c, x.alpha)

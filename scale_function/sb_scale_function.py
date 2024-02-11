@@ -18,7 +18,7 @@ class SBScaleFunction(ScaleFunction):
         if (self.q > 0 or (self.m < 0 and self.q == 0)):
             self.original_process = self.process
             self.c = self.compute_c(self.q)
-            self.process = create_tempered(self.process, self.c)
+            self.process = create_tempered(self.c, self.process)
             self.m = self.process.mean(1, 0)
         else:
             self.c = None
