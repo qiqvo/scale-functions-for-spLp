@@ -13,7 +13,7 @@ class TemperedSpectrallyNegativeLevyRandomVariable(SpectrallyNegativeLevyRandomV
                  max_jump_cutoff: float = 2 ** 12) -> None:
         assert sigma == 0
 
-        self._char_multiplier = char_multiplier
+        self.char_multiplier = char_multiplier
         self.c = c
         tempered_mu = self.get_tempered_mu(mu, nu)
         if nu_unwarranted is not None:
