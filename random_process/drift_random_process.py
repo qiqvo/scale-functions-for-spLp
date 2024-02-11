@@ -2,7 +2,9 @@ from typing import Callable
 import numpy as np
 
 from random_process.random_process import RandomProcess
+from random_variable.const_random_variable import ConstRandomVariable
 from random_variable.random_variable import RandomVariable
+from random_variable.sum_of_random_variable import SumOfIndependentRandomVariable
 
 
 class DriftRandomProcess(RandomProcess):
@@ -29,4 +31,7 @@ class DriftRandomProcess(RandomProcess):
         return theta(self.process.sample(N, time, z))
 
     def get_underlying_xi_for_time(self, time: float) -> RandomVariable:
-        return self.process.get_underlying_xi_for_time(time)
+        xi = self.process.get_underlying_xi_for_time(time)
+        drift_rv = ConstRandomVariable(self.drift * time)
+        return SumOfIndependentRandomVariable(xi, drift_rv)
+    
