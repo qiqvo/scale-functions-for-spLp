@@ -14,8 +14,8 @@ class ConstRandomVariable(RandomVariable):
     def characteristic_function(self, t: np.complex64) -> np.complex64:
         return np.exp(1j * t * self.const)
 
-    def laplace_transform(self, t: np.float64) -> np.float64:
-        return np.exp(- t * self.const)
+    def psi(self, t: np.float64) -> np.float64:
+        return - t * self.const
 
     def pdf(self, x: np.float64) -> np.float64:
         return 1 if x == self.const else 0

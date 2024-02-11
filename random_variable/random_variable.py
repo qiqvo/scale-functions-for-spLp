@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Callable
 import numpy as np
-from scipy import optimize
+import scipy
 
 
 class RandomVariable(ABC):
@@ -17,9 +17,26 @@ class RandomVariable(ABC):
     def characteristic_function(self, t: np.complex64) -> np.complex64:
         return None
 
-    @abstractmethod
     def laplace_transform(self, t: np.float64) -> np.float64:
+        return np.exp(self.psi(t))
+
+    @abstractmethod
+    def psi(self, t: np.float64) -> np.float64:
         return None
+    
+    def phi(self, q:np.float64, a:np.float64=0, b:np.float64=2**10) -> np.float64:
+        # if find_min:
+        #     a = scipy.optimize.minimize_scalar(self.psi)
+        if q == 0 and self.mean() < 0:
+            a = 1
+            while self.psi(a) > 0:
+                b = a
+                a = a // 2
+        else:
+            a = 0
+
+        res = scipy.optimize.brentq(lambda t: self.psi(t) - q, a, b)
+        return res
 
     @abstractmethod
     def pdf(self, x: np.float64) -> np.float64:
@@ -30,7 +47,7 @@ class RandomVariable(ABC):
         return None
     
     def inverse_cdf(self, x: np.float64) -> np.float64:
-        y = optimize.brentq(lambda t: self.cdf(t) - x, self._interval_a, self._interval_b)
+        y = scipy.optimize.brentq(lambda t: self.cdf(t) - x, self._interval_a, self._interval_b)
         return y
 
     @abstractmethod

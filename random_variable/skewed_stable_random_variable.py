@@ -24,6 +24,9 @@ class SkewedStableRandomVariable(RandomVariable):
     def laplace_transform(self, t: np.float64) -> np.float64:
         return None
     
+    def psi(self, t: np.float64) -> np.float64:
+        return None
+
     def pdf(self, x: np.float64) -> np.float64:
         return None
 
@@ -59,10 +62,9 @@ class TotallySkewedStableRandomVariable(SkewedStableRandomVariable, UntemperedTo
         super().__init__(alpha, -1 if alpha < 1 else 1, char_multiplier, amplitude_multiplier)
         super(SkewedStableRandomVariable, self).__init__(alpha, char_multiplier, amplitude_multiplier)
 
-    def laplace_transform(self, t: np.float64) -> np.float64:
+    def psi(self, t: np.float64) -> np.float64:
         t *= self.amplitude_multiplier
-        return np.exp(self.char_multiplier * np.sign(self.alpha - 1) * (t)**self.alpha)
-    
+        return self.char_multiplier * np.sign(self.alpha - 1) * (t)**self.alpha
 
 class SymmetricStableRandomVariable(SkewedStableRandomVariable):
     def __init__(self, alpha: float, char_multiplier:float = 1,

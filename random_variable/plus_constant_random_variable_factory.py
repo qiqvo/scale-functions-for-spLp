@@ -6,6 +6,7 @@ from random_variable.random_variable import RandomVariable
 from random_variable.spectrally_negative_levy_random_variable import SpectrallyNegativeLevyRandomVariable
 from random_variable.sum_of_independent_random_variable import SumOfIndependentRandomVariable
 from random_variable.tempered_spectrally_negative_levy_random_variable import TemperedSpectrallyNegativeLevyRandomVariable
+from random_variable.tempered_stable_random_variable import TemperedTotallySkewedStableRandomVariable
 
 def create_random_variable_plus_constant(const: float, rv: RandomVariable) -> RandomVariable:
     if isinstance(rv, MultipleOfRandomVariable):

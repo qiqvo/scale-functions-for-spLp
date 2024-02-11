@@ -52,20 +52,6 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
         res += scipy.integrate.quad(lambda x: (np.exp(t*x) - 1 - t*x) * self.nu(x), -1, 0)[0]
         return res * self._char_multiplier
     
-    def phi(self, q:np.float64, a:np.float64=0, b:np.float64=2**10) -> np.float64:
-        # if find_min:
-        #     a = scipy.optimize.minimize_scalar(self.psi)
-        if q == 0 and self.mean() < 0:
-            a = 1
-            while self.psi(a) > 0:
-                b = a
-                a = a // 2
-        else:
-            a = 0
-
-        res = scipy.optimize.brentq(lambda t: self.psi(t) - q, a, b)
-        return res
-    
     def pdf(self, x: np.float64) -> np.float64:
         return None
 

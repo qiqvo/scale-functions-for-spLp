@@ -18,6 +18,9 @@ class SumOfIndependentRandomVariable(RandomVariable):
     def laplace_transform(self, t: np.float64) -> np.float64:
         return self.rv1.laplace_transform(t) * self.rv2.laplace_transform(t)
     
+    def psi(self, t: np.float64) -> np.float64:
+        return self.rv1.psi(t) + self.rv2.psi(t)
+    
     def pdf(self, x: np.float64) -> np.float64:
         return None
 

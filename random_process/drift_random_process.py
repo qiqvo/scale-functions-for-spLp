@@ -4,7 +4,7 @@ import numpy as np
 from random_process.random_process import RandomProcess
 from random_variable.const_random_variable import ConstRandomVariable
 from random_variable.random_variable import RandomVariable
-from random_variable.sum_of_random_variable import SumOfIndependentRandomVariable
+from random_variable.sum_of_independent_random_variable import SumOfIndependentRandomVariable
 
 
 class DriftRandomProcess(RandomProcess):
