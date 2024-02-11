@@ -6,12 +6,14 @@ from random_variable.random_variable import RandomVariable
 from random_variable.tempered_stable_random_variable import UntemperedTotallySkewedStableRandomVariable
 
 class SkewedStableRandomVariable(RandomVariable):
-    def __init__(self, alpha: float, beta: float, char_multiplier:float=1,
+    def __init__(self, alpha: float, beta: float, 
+                 char_multiplier:float=1,
                  amplitude_multiplier: float=1) -> None:
         self.rng = np.random.default_rng(seed=seed)
         
         self.amplitude_multiplier = amplitude_multiplier
-        self._char_multiplier = char_multiplier
+        self.char_multiplier = char_multiplier
+
         self.alpha = alpha
         self.beta = beta
         self._k = 1 - abs(1 - self.alpha)
@@ -47,7 +49,7 @@ class SkewedStableRandomVariable(RandomVariable):
         a = np.cos(Phi - self.alpha * dPhi)
         s = np.sin(self.alpha * dPhi) / np.power(np.cos(Phi), (1/self.alpha))
         s *= np.power(a / w, (1 - self.alpha) / self.alpha)
-        s *= (self._char_multiplier)**(1/self.alpha) * self.amplitude_multiplier
+        s *= (self.char_multiplier)**(1/self.alpha) * self.amplitude_multiplier
         return s
     
 
@@ -59,7 +61,7 @@ class TotallySkewedStableRandomVariable(SkewedStableRandomVariable, UntemperedTo
 
     def laplace_transform(self, t: np.float64) -> np.float64:
         t *= self.amplitude_multiplier
-        return np.exp(self._char_multiplier * np.sign(self.alpha - 1) * (t)**self.alpha)
+        return np.exp(self.char_multiplier * np.sign(self.alpha - 1) * (t)**self.alpha)
     
 
 class SymmetricStableRandomVariable(SkewedStableRandomVariable):

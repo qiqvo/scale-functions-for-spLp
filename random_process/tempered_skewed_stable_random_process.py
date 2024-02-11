@@ -9,7 +9,7 @@ class TemperedTotallySkewedStableRandomProcess(TemperedSpectrallyNegativeLevyRan
         self.alpha = alpha
         xi = self.get_underlying_xi_for_time(1)
         super().__init__(c, xi.mu, xi.sigma, xi.nu, 
-                         xi.nu_unwarranted, xi._max_jump_cutoff)
+                         xi.nu_unwarranted, xi.max_jump_cutoff)
 
     def get_underlying_xi_for_time(self, time: float) -> TemperedTotallySkewedStableRandomVariable:
         return TemperedTotallySkewedStableRandomVariable(self.c * time**(1/self.alpha), 

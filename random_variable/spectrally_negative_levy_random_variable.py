@@ -28,7 +28,7 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
         self.nu = nu
         self.nu_unwarranted = nu_unwarranted 
 
-        self._max_jump_cutoff = max_jump_cutoff
+        self.max_jump_cutoff = max_jump_cutoff
         self._max_intensity_over_ab = 1000
         self._min_intensity_over_ab = 0.1
         self.nu_compensation = self.get_nu_compensation()
@@ -94,9 +94,9 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
         s = self.rng.normal(self.mu * self._char_multiplier, shifted_sigma * np.sqrt(self._char_multiplier), N)
 
         a, b = self.get_min_jump_size(), 1
-        while a < self._max_jump_cutoff:
-            if b > self._max_jump_cutoff:
-                b = self._max_jump_cutoff
+        while a < self.max_jump_cutoff:
+            if b > self.max_jump_cutoff:
+                b = self.max_jump_cutoff
 
             # simulate Pois with intensity nu on [-b, -a]
             # adjusting the level b so that Pois intensity is smaller than self._max_intensity_over_ab 
@@ -111,8 +111,8 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
                 b *= 2
                 interval_max = self.max_abs_nu_on_interval(-b, -a)
                 nu_ab = interval_max * (b - a) * self._char_multiplier
-                if b > self._max_jump_cutoff:
-                    b = self._max_jump_cutoff
+                if b > self.max_jump_cutoff:
+                    b = self.max_jump_cutoff
                     break
             P = self.rng.poisson(nu_ab, N)
             
