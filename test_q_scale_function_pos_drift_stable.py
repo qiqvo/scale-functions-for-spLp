@@ -13,10 +13,10 @@ from stick_breaking_representation.stick_breaking_representation_factory import 
 def main():
     alpha = 1.7
     drift = 0.1
-    T = 1e5
+    T = 1e3
     epsilon = 1 / T
     n_sticks = np.floor(np.log(T / epsilon) / np.log(2))
-    N = 500
+    N = 100
 
     Y = TotallySkewedStableRandomProcess(alpha)
     X = DriftRandomProcess(drift, Y)

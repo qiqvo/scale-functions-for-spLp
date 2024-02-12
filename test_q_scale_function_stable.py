@@ -12,15 +12,15 @@ from stick_breaking_representation.stick_breaking_representation_factory import 
 def main():
     alpha = 1.7
     q = 0.1
-    T = 1e5
-    epsilon = 1 / T
+    T = 1e4
+    epsilon = 1e-3
     n_sticks = np.floor(np.log(T / epsilon) / np.log(2))
-    N = 1000
+    N = 500
 
     X = TotallySkewedStableRandomProcess(alpha)
     W = TotallySkewedStableScaleFunction(q, X)
 
-    P1 = StickBreakingRepresentationFactory(InfIntervalStickBreakingRepresentation, epsilon=epsilon)
+    P1 = StickBreakingRepresentationFactory(InfIntervalStickBreakingRepresentation, epsilon=epsilon, T=T)
     P2 = StickBreakingRepresentationFactory(FixedIntervalStickBreakingRepresentation, T=T, n_sticks=n_sticks)
     P3 = StickBreakingRepresentationFactory(ExpIntervalStickBreakingRepresentation, theta=1/T, n_sticks=n_sticks)
     # P4 = StickBreakingRepresentationFactory(FixedIntervalStickBreakingRepresentation, T=T, n_sticks=n_sticks)

@@ -9,20 +9,20 @@ from stick_breaking_representation.stick_breaking_representation import StickBre
 
 class InfIntervalStickBreakingRepresentation(StickBreakingRepresentation):
     # work between eps and 1/eps
-    def __init__(self, process: RandomProcess, epsilon: float) -> None:
+    def __init__(self, process: RandomProcess, epsilon: float, T: float) -> None:
         super().__init__(process)
 
         self.rng = np.random.default_rng(seed=seed)
 
         self._eps = epsilon
-        self._inv_eps = 1/epsilon
-        self.M = 2 * np.log(self._inv_eps)
+        self._T = T
+        self.M = np.log(T) - np.log(epsilon)
     
     def measure(self, t0: float, t1: float) -> float:
         if t0 < self._eps: 
             t0 = self._eps
-        if t1 > self._inv_eps:
-            t1 = self._inv_eps
+        if t1 > self._T:
+            t1 = self._T
         return self.quick_measure(t0, t1)
     
     def quick_measure(self, t0: float, t1: float) -> float: 

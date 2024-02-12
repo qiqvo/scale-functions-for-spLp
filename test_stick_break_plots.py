@@ -10,7 +10,7 @@ def main():
     drift = 0.1
     Y = TotallySkewedStableRandomProcess(alpha)
     X = DriftRandomProcess(drift, Y)
-    sbr = InfIntervalStickBreakingRepresentation(X, epsilon)
+    sbr = InfIntervalStickBreakingRepresentation(X, epsilon, 1/epsilon)
 
     m = 3
     s = sbr.sample(m)
