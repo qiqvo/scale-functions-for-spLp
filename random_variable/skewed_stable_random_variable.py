@@ -19,6 +19,7 @@ class SkewedStableRandomVariable(RandomVariable):
         self._k = 1 - abs(1 - self.alpha)
 
     def characteristic_function(self, t: np.complex64) -> np.complex64:
+        t *= self.amplitude_multiplier
         return np.exp(-self._char_multiplier  * np.abs(t)**self.alpha * np.exp(- 1j * np.pi/2 * self.beta * self._k * np.sign(t)))
     
     def laplace_transform(self, t: np.float64) -> np.float64:
@@ -65,6 +66,9 @@ class TotallySkewedStableRandomVariable(SkewedStableRandomVariable, UntemperedTo
     def psi(self, t: np.float64) -> np.float64:
         t *= self.amplitude_multiplier
         return self.char_multiplier * np.sign(self.alpha - 1) * (t)**self.alpha
+    
+    def laplace_transform(self, t: np.float64) -> np.float64:
+        return super(UntemperedTotallySkewedStableRandomVariable, self).laplace_transform(t)
 
 class SymmetricStableRandomVariable(SkewedStableRandomVariable):
     def __init__(self, alpha: float, char_multiplier:float = 1,
