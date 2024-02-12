@@ -26,7 +26,18 @@ class TemperedSpectrallyNegativeLevyRandomVariable(SpectrallyNegativeLevyRandomV
                          amplitude_multiplier=amplitude_multiplier,
                          max_jump_cutoff=max_jump_cutoff)
 
+    _precomputed_tempered_mu = dict()
+    def _get_key_for_tempered_mu(self, mu, nu):
+        return (self.c, mu, nu(-1))
+
     def get_tempered_mu(self, mu: float, nu: Callable[..., Any]):
         # see for example Ch 9.5 of Financial Modelling with Jump Processes By Rama Cont, Peter Tankov
-        tempered_mu = mu + scipy.integrate.quad(lambda x: x * (np.exp(self.c * x) - 1) * nu(x), -1, 0)[0] 
+        key = self._get_key_for_tempered_mu(mu, nu)
+        if key in self._precomputed_tempered_mu:
+            return self._precomputed_tempered_mu[key]
+        
+        # TODO: nu(-1) is not a characteristic....
+        tempered_mu = mu 
+        tempered_mu += scipy.integrate.quad(lambda x: x * (np.exp(self.c * x) - 1) * nu(x), -1, 0)[0] 
+        self._precomputed_tempered_mu[key] = tempered_mu
         return tempered_mu

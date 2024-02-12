@@ -22,11 +22,23 @@ class TemperedTotallySkewedStableRandomVariable(TemperedSpectrallyNegativeLevyRa
 
         super().__init__(c, mu, 0, nu, nu_unwarranted, char_multiplier, amplitude_multiplier, max_jump_cutoff=max_jump_cutoff)
 
+    def _get_key(self):
+        return (self.c, self.alpha)
+    
+    def _get_key_for_precomputed_nu_compensation(self):
+        return self._get_key()
+    
+    _precomputed_tempered_mu = dict()
     def get_tempered_mu(self, mu: float, nu: Callable[..., Any]):
+        key = self._get_key()
+        if key in self._precomputed_shifted_sigma:
+            return self._precomputed_tempered_mu[key]
+        
         # by computing the mean
-        mu = scipy.integrate.quad(lambda x: np.exp(-self.c / x) * (x)**(self.alpha-2), 0, 1)[0] / self._const
-        mu += self.mean() / self.char_multiplier 
-        return mu
+        res = scipy.integrate.quad(lambda x: np.exp(-self.c / x) * (x)**(self.alpha-2), 0, 1)[0]
+        res = res / self._const + self.mean() / self.char_multiplier
+        self._precomputed_tempered_mu[key] = res
+        return res
 
     def mean(self):
         return self.char_multiplier * self.alpha * self.c ** (self.alpha - 1)
@@ -43,8 +55,16 @@ class TemperedTotallySkewedStableRandomVariable(TemperedSpectrallyNegativeLevyRa
     def get_min_jump_size(self):
         return self._min_jump_cutoff
     
+    _precomputed_shifted_sigma = dict()
+
     def get_shifted_sigma(self):
-        return np.sqrt(scipy.integrate.quad(lambda x: self.nu_unwarranted(-x) * x * x, 0, self._min_jump_cutoff)[0])
+        key = self._get_key()
+        if key in self._precomputed_shifted_sigma:
+            return self._precomputed_shifted_sigma[key]
+        
+        res = np.sqrt(scipy.integrate.quad(lambda x: self.nu_unwarranted(-x) * x * x, 0, self._min_jump_cutoff)[0])
+        self._precomputed_shifted_sigma[key] = res
+        return res
 
 
 class UntemperedTotallySkewedStableRandomVariable(TemperedTotallySkewedStableRandomVariable):

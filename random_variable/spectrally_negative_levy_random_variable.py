@@ -33,8 +33,18 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
         self._min_intensity_over_ab = 0.1
         self.nu_compensation = self.get_nu_compensation()
         
+    _precomputed_nu_compensation = dict()
+    def _get_key_for_precomputed_nu_compensation(self):
+        # TODO: nu(-1) is not a characteristic....
+        return (self.mu, self.sigma, self.nu(-1))
+
     def get_nu_compensation(self, a:float=-1, b:float=0):
+        key = self._get_key_for_precomputed_nu_compensation()
+        if key in self._precomputed_nu_compensation:
+            return self._precomputed_nu_compensation[key]
+        
         nu_compensation = scipy.integrate.quad(lambda x: x * self.nu(x), a, b)[0]
+        self._precomputed_nu_compensation[key] = nu_compensation
         return nu_compensation
 
     # TODO: finish up
@@ -45,11 +55,21 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
     def laplace_transform(self, t: np.float64) -> np.float64:
         return np.exp(self.psi(t))
     
+    _precomputed_psi = dict()
+    def _get_key_for_precomputed_psi(self, t):
+        # TODO: nu(-1) is not a characteristic....
+        return (self.mu, self.sigma, self.nu(-1), t)
+
     def psi(self, t: np.float64) -> np.float64:
         t *= self.amplitude_multiplier
-        res = - t * self.mu + t*t*self.sigma*self.sigma / 2
-        res += scipy.integrate.quad(lambda x: (np.exp(t*x) - 1) * self.nu(x), -np.infty, -1)[0]
-        res += scipy.integrate.quad(lambda x: (np.exp(t*x) - 1 - t*x) * self.nu(x), -1, 0)[0]
+        key = self._get_key_for_precomputed_psi(t)
+        if key in self._precomputed_psi:
+            res = self._precomputed_psi[key]
+        else:
+            res = - t * self.mu + t*t*self.sigma*self.sigma / 2
+            res += scipy.integrate.quad(lambda x: (np.exp(t*x) - 1) * self.nu(x), -np.infty, -1)[0]
+            res += scipy.integrate.quad(lambda x: (np.exp(t*x) - 1 - t*x) * self.nu(x), -1, 0)[0]
+            self._precomputed_psi[key] = res
         return res * self._char_multiplier
     
     def pdf(self, x: np.float64) -> np.float64:
