@@ -1,6 +1,7 @@
 from matplotlib import pyplot as plt
 import numpy as np
 from random_process.skewed_stable_random_process import TotallySkewedStableRandomProcess
+from random_variable.skewed_stable_random_variable import TotallySkewedStableRandomVariable
 
 from scale_function.sb_scale_function import SBScaleFunction
 from scale_function.skewed_stable_scale_function import TotallySkewedStableScaleFunction
@@ -12,10 +13,10 @@ from stick_breaking_representation.stick_breaking_representation_factory import 
 def main():
     alpha = 1.7
     q = 0.1
-    T = 1e5
+    T = 1e6
     epsilon = 1e-2
     n_sticks = np.floor(np.log(T / epsilon) / np.log(2))
-    N = 500
+    N = 50
 
     X = TotallySkewedStableRandomProcess(alpha)
     W = TotallySkewedStableScaleFunction(q, X)
@@ -34,14 +35,16 @@ def main():
     x1s, v1s = V1.profile(a, b)
     x2s, v2s = V2.profile(a, b)
     x3s, v3s = V3.profile(a, b)
-    plt.plot(xs, ws, label='W')
-    plt.plot(x1s, v1s, label='sampled W, inf interval')
-    plt.plot(x2s, v2s, label='sampled W, fixed interval')
-    plt.plot(x3s, v3s, label='sampled W, exp interval')
-    plt.title('Comparison of sampled W with the real W')
 
-    plt.legend()
-    plt.show()
+    for d in [TotallySkewedStableRandomVariable._precomputed_nu_compensation,
+              TotallySkewedStableRandomVariable._precomputed_shifted_sigma,
+              TotallySkewedStableRandomVariable._precomputed_tempered_mu]:
+        d_items = sorted(d.items())
+        d_keys, d_values = zip(*d_items)
+        d_keys = np.array(d_keys)[:, 0]
+        plt.plot(d_keys, d_values)
+        plt.xlabel('c')
+        plt.show()
 
 
 if __name__ == '__main__':

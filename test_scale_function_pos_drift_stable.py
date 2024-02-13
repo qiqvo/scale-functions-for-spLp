@@ -14,8 +14,8 @@ def main():
     alpha = 1.6
     q = 0
     drift = 0.1
-    T = 1e4
-    epsilon = 1e-3
+    T = 1e5
+    epsilon = 1e-2
     n_sticks = np.floor(np.log(T / epsilon) / np.log(2))
     N = 500
 
@@ -33,11 +33,11 @@ def main():
 
     a, b = 0, 3
     xs, ws = W.profile(a, b)
-    x1s, v1s = V1.profile(a, b)
+    # x1s, v1s = V1.profile(a, b)
     x2s, v2s = V2.profile(a, b)
     x3s, v3s = V3.profile(a, b)
     plt.plot(xs, ws, label='W')
-    plt.plot(x1s, v1s, label='sampled W, inf interval')
+    # plt.plot(x1s, v1s, label='sampled W, inf interval')
     plt.plot(x2s, v2s, label='sampled W, fixed interval')
     plt.plot(x3s, v3s, label='sampled W, exp interval')
     plt.title('Comparison of sampled W with the real W')
