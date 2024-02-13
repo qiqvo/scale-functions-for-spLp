@@ -16,7 +16,7 @@ def main():
     drift = 0.1
     T = 1e5
     epsilon = 1e-2
-    n_sticks = np.floor(np.log(T / epsilon) / np.log(2))
+    n_sticks = int(np.floor(np.log(T / epsilon) / np.log(2)))
     N = 500
 
     Y = TotallySkewedStableRandomProcess(alpha)

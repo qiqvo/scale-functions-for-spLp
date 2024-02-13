@@ -15,8 +15,8 @@ def main():
     drift = 0.1
     T = 1e5
     epsilon = 1e-2
-    n_sticks = np.floor(np.log(T / epsilon) / np.log(2))
-    N = 500
+    n_sticks = int(np.floor(np.log(T / epsilon) / np.log(2)))
+    N = 1000
 
     Y = TotallySkewedStableRandomProcess(alpha)
     X = DriftRandomProcess(drift, Y)
@@ -24,13 +24,18 @@ def main():
 
     W = PosDriftTotallySkewedStableScaleFunction(0, X)
 
-    a, b = 0, 3
+    a, b = 0, 1
     xs, ws = W.profile(a, b)
 
     plt.plot(xs, ws, label='W')
-    for q in [0, 0.001, 0.05, 0.1, 0.15]:
+    for q in [0, 1e-10, 1e-7, 1e-4, 1e-2, 0.05, 0.1, 0.15]:
         V2 = SBScaleFunction(q, X, P2, N)
         xs, vs = V2.profile(a, b)
+        print('q:', q)
+        print('xs')
+        print(xs)
+        print('vs')
+        print(vs)
         plt.plot(xs, vs, label=f'sampled W^(q), q={'%.2E' % q}')
     plt.title('Comparison for different q, Pos Drift Stable')
 

@@ -18,7 +18,7 @@ class RandomVariable(ABC):
         return None
 
     def laplace_transform(self, t: np.float64) -> np.float64:
-        return np.exp(self.psi(t))
+        return np.exp(-self.psi(t))
 
     @abstractmethod
     def psi(self, t: np.float64) -> np.float64:

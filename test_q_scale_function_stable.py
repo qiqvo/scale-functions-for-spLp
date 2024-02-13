@@ -12,10 +12,10 @@ from stick_breaking_representation.stick_breaking_representation_factory import 
 def main():
     alpha = 1.7
     q = 0.1
-    T = 1e5
-    epsilon = 1e-2
-    n_sticks = np.floor(np.log(T / epsilon) / np.log(2))
-    N = 500
+    T = 1e7
+    epsilon = 1e-3
+    n_sticks = int(np.floor(np.log(T / epsilon) / np.log(2)))
+    N = 300
 
     X = TotallySkewedStableRandomProcess(alpha)
     W = TotallySkewedStableScaleFunction(q, X)

@@ -25,7 +25,7 @@ def main():
 
     zs = np.transpose(np.linspace(0, 3, 100))
     lt = lambda s: np.log(np.mean(np.exp(np.outer(s, zs)), axis=0))
-    lt_theor = np.log(Y.laplace_transform(zs))
+    lt_theor = (Y.psi(zs))
     lt1 = lt(s1)
     lt2 = lt(s2)
     lt3 = lt(s3)

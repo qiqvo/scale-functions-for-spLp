@@ -55,9 +55,8 @@ class SBScaleFunction(ScaleFunction):
         if self.stick_breaking_samples is None:
             self.resample()
 
-        ps = np.sum(self.stick_breaking_samples[:,1], 
-                    where=self.stick_breaking_samples[:,1] < 0, 
-                    axis=1)
+        xis = self.stick_breaking_samples[:,1]
+        ps = np.sum(xis, where= xis<0, axis=1)
         ps = np.sort(-np.array(ps))
         rs = (ps <= b) & (ps >= a)
         values = np.arange(1, self.N + 1) / self.N / self.m

@@ -23,7 +23,7 @@ def main():
     for j in range(2, 7):
         epsilon = 0.1**j
         T = 1/epsilon
-        n_sticks = np.floor(np.log(T / epsilon) / np.log(2))
+        n_sticks = int(np.floor(np.log(T / epsilon) / np.log(2)))
 
         P1 = StickBreakingRepresentationFactory(InfIntervalStickBreakingRepresentation, epsilon=epsilon, T=T)
         P2 = StickBreakingRepresentationFactory(FixedIntervalStickBreakingRepresentation, T=T, n_sticks=n_sticks)

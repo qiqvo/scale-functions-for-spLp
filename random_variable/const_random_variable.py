@@ -15,7 +15,7 @@ class ConstRandomVariable(RandomVariable):
         return np.exp(1j * t * self.const)
 
     def psi(self, t: np.float64) -> np.float64:
-        return - t * self.const
+        return t * self.const
 
     def pdf(self, x: np.float64) -> np.float64:
         return 1 if x == self.const else 0
