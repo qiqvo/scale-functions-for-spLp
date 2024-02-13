@@ -22,20 +22,17 @@ class FixedIntervalStickBreakingRepresentation(StickBreakingRepresentation):
         return self._T
 
     def sample(self, N: int) -> np.ndarray:
-        s = []
-        for _ in range(N):
-            ls = []
-            xis = []
-            l = self.get_T()
-            n = 0
-            while n < self._n_sticks:
-                ls.append(l * self.rng.uniform(0, 1))
-                l = ls[-1]
+        s = np.empty((N, 2, self._n_sticks))
+        for i in range(N):
+            l_xis = np.empty((2, self._n_sticks))
+            T = self.get_T()
+            for j in range(self._n_sticks):
+                l = T * self.rng.uniform(0, 1)
+                T -= l
                 xi = self.process.sample(1, l, 0)[0]
-                xis.append(xi)
-                n += 1
-            s.append((np.array(ls), np.array(xis)))
-        return np.array(s)
+                l_xis[:, j] = (l, xi)
+            s[i] = l_xis
+        return s
     
 
 class ExpIntervalStickBreakingRepresentation(FixedIntervalStickBreakingRepresentation):
