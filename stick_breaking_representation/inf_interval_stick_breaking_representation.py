@@ -1,18 +1,14 @@
 import numpy as np
-
-
-from settings import seed
+from i_random import IRandom
 
 from random_process.random_process import RandomProcess
 from stick_breaking_representation.stick_breaking_representation import StickBreakingRepresentation
 
 
-class InfIntervalStickBreakingRepresentation(StickBreakingRepresentation):
+class InfIntervalStickBreakingRepresentation(StickBreakingRepresentation, IRandom):
     # work between eps and 1/eps
     def __init__(self, process: RandomProcess, epsilon: float, T: float) -> None:
         super().__init__(process)
-
-        self.rng = np.random.default_rng(seed=seed)
 
         self._eps = epsilon
         self._T = T

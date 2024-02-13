@@ -1,14 +1,13 @@
 import numpy as np
+from i_random import IRandom
 
-from settings import seed
 from random_process.random_process import RandomProcess
 
 from stick_breaking_representation.stick_breaking_representation import StickBreakingRepresentation
 
-class FixedIntervalStickBreakingRepresentation(StickBreakingRepresentation):
+class FixedIntervalStickBreakingRepresentation(StickBreakingRepresentation, IRandom):
     def __init__(self, process: RandomProcess, T: float, n_sticks: int) -> None:
         super().__init__(process)
-        self.rng = np.random.default_rng(seed=seed)
         self._T = T
         self._n_sticks = n_sticks
     

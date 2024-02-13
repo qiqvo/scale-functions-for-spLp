@@ -1,12 +1,11 @@
 from typing import Any, Callable
 import numpy as np
 import scipy
-
-from settings import seed
+from i_random import IRandom
 
 from random_variable.random_variable import RandomVariable
 
-class SpectrallyNegativeLevyRandomVariable(RandomVariable):    
+class SpectrallyNegativeLevyRandomVariable(RandomVariable, IRandom):    
     # assuming the form (mu, sigma, nu)
     # where 
     # E exp(lambda \xi) 
@@ -19,8 +18,6 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
                  char_multiplier: float=1, 
                  amplitude_multiplier: float=1,
                  max_jump_cutoff:float=2**12) -> None:
-        self.rng = np.random.default_rng(seed=seed)
-
         self._char_multiplier = char_multiplier
         self.amplitude_multiplier = amplitude_multiplier
         self.mu = mu
@@ -30,7 +27,7 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
 
         self.max_jump_cutoff = max_jump_cutoff
         self._max_intensity_over_ab = 1000
-        self._min_intensity_over_ab = 0.1
+        self._min_intensity_over_ab = 3
         self.nu_compensation = self.get_nu_compensation()
         
     _precomputed_nu_compensation = dict()
@@ -53,7 +50,7 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable):
     
     # TODO: finish up
     def laplace_transform(self, t: np.float64) -> np.float64:
-        return np.exp(self.psi(t))
+        return np.exp(-self.psi(t))
     
     _precomputed_psi = dict()
     def _get_key_for_precomputed_psi(self, t):

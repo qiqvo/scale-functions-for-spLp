@@ -1,15 +1,13 @@
 import numpy as np
-
-from settings import seed
+from i_random import IRandom
 
 from random_variable.random_variable import RandomVariable
 from random_variable.tempered_stable_random_variable import UntemperedTotallySkewedStableRandomVariable
 
-class SkewedStableRandomVariable(RandomVariable):
+class SkewedStableRandomVariable(RandomVariable, IRandom):
     def __init__(self, alpha: float, beta: float, 
                  char_multiplier:float=1,
                  amplitude_multiplier: float=1) -> None:
-        self.rng = np.random.default_rng(seed=seed)
         
         self.amplitude_multiplier = amplitude_multiplier
         self.char_multiplier = char_multiplier
