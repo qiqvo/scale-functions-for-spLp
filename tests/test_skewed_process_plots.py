@@ -6,7 +6,7 @@ from random_process.skewed_stable_random_process import TotallySkewedStableRando
 
 
 
-def main():
+def test_skewed_process_plots():
     alpha = 1.2
     drift = 10
     Y = TotallySkewedStableRandomProcess(alpha)
@@ -19,6 +19,3 @@ def main():
     plt.legend()
     plt.show()
 
-
-if __name__ == '__main__':
-    main()

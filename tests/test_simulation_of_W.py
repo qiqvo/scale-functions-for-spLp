@@ -9,7 +9,7 @@ from stick_breaking_representation.inf_interval_stick_breaking_representation im
 from stick_breaking_representation.stick_breaking_representation_factory import StickBreakingRepresentationFactory
 
 
-def main():
+def test_simulation_of_W():
     alpha = 1.6
     drift = 0.1
     q = 0
@@ -49,7 +49,3 @@ def main():
     plt.legend()
     plt.show()
     # print(w1[-1])
-
-
-if __name__ == '__main__':
-    main()

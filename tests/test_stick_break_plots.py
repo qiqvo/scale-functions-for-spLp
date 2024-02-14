@@ -4,7 +4,7 @@ from random_process.skewed_stable_random_process import TotallySkewedStableRando
 from stick_breaking_representation.inf_interval_stick_breaking_representation import InfIntervalStickBreakingRepresentation
 
 
-def main():
+def test_stick_break_plots():
     alpha = 1.2
     epsilon = 0.001
     drift = 0.1
@@ -17,7 +17,3 @@ def main():
     for i in range(m):
         plt.scatter(s[i][0], s[i][1], marker='x')
     plt.show()
-
-
-if __name__ == '__main__':
-    main()
