@@ -1,10 +1,7 @@
 from matplotlib import pyplot as plt
-import numpy as np
-from random_process.drift_random_process import DriftRandomProcess
 
 from random_process.skewed_stable_random_process import TotallySkewedStableRandomProcess
 from scale_function.mc_scale_function import MCScaleFunction
-from scale_function.pos_drift_stable_scale_function import PosDriftTotallySkewedStableScaleFunction
 from scale_function.skewed_stable_scale_function import TotallySkewedStableScaleFunction
 
 
