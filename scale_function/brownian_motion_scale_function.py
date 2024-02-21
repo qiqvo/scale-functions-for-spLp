@@ -1,7 +1,4 @@
-from typing import Union
-import numfracpy
 import numpy as np
-import scipy
 
 from random_process.brownian_motion_random_process import DriftBrownianMotionRandomProcess
 from scale_function.scale_function import AnalyticalScaleFunction
