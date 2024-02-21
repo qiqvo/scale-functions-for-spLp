@@ -36,3 +36,6 @@ class RandomProcess(ABC):
     @abstractmethod
     def get_underlying_xi_for_time(self, time: float) -> RandomVariable:
         return None
+    
+    def is_infinite_activity(self) -> bool:
+        return None

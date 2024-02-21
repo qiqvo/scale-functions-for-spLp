@@ -12,6 +12,9 @@ class TemperedTotallySkewedStableRandomProcess(TemperedSpectrallyNegativeLevyRan
         super().__init__(c, xi.mu, xi.sigma, xi.nu, 
                          xi.nu_unwarranted, xi.max_jump_cutoff)
 
+    def is_infinite_activity(self) -> bool:
+        return True
+    
     def get_underlying_xi_for_time(self, time: float) -> TemperedTotallySkewedStableRandomVariable:
         min_jump_cutoff = 2**(-5)
         max_jump_cutoff = 2**5
