@@ -2,6 +2,7 @@ from typing import Callable
 import numpy as np
 
 from random_process.random_process import RandomProcess
+from random_process.spectrally_negative_levy_random_process import SpectrallyNegativeLevyRandomProcess
 from random_variable.const_random_variable import ConstRandomVariable
 from random_variable.random_variable import RandomVariable
 from random_variable.sum_of_independent_random_variable import SumOfIndependentRandomVariable
@@ -30,8 +31,14 @@ class DriftRandomProcess(RandomProcess):
     def sample_function(self, N: int, theta: Callable, time: float, z: np.float64) -> np.ndarray[float]:
         return theta(self.process.sample(N, time, z))
 
-    def get_underlying_xi_for_time(self, time: float) -> RandomVariable:
+    def get_underlying_xi_for_time(self, time: float) -> RandomVariable:            
         xi = self.process.get_underlying_xi_for_time(time)
-        drift_rv = ConstRandomVariable(self.drift * time)
-        return SumOfIndependentRandomVariable(xi, drift_rv)
+        if isinstance(self.process, SpectrallyNegativeLevyRandomProcess):
+            xi.mu += self.drift * time
+            return xi
+        else:
+            drift_rv = ConstRandomVariable(self.drift * time)
+            return SumOfIndependentRandomVariable(xi, drift_rv)
     
+    def is_infinite_activity(self) -> bool:
+        return self.process.is_infinite_activity()
