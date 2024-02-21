@@ -8,12 +8,18 @@ from scale_function.scale_function import ScaleFunction
 class MCScaleFunction(ScaleFunction):
     def __init__(self, q:float, process: SpectrallyNegativeLevyRandomProcess, 
                  h:float, 
-                 upper_cutoff:float) -> None:
+                 upper_cutoff:float,
+                 setup_at_init:bool=False) -> None:
         super().__init__(q, process)
         self.h = h
         self.upper_cutoff = upper_cutoff
         self.xi = self.process.get_underlying_xi_for_time(1)
-        self.total_mass, self.p, self.Q = self._setup()
+        if setup_at_init:
+            self._setup()
+        else: 
+            self.Q = None
+            self.p = None
+            self.total_mass = None
 
     def _mu_h(self):
         if not self.process.is_infinite_activity():
@@ -87,12 +93,10 @@ class MCScaleFunction(ScaleFunction):
         for k in range(2, upper_cutoff):  # compute entries for Q(2:n)
             Q[k - 1] = self._c(k)
 
-        total_mass = p + Q[0] + self._gamma()  # compute total Levy mass of the approximating chain X^h
+        self.total_mass = p + Q[0] + self._gamma()  # compute total Levy mass of the approximating chain X^h
 
-        p /= total_mass  # normalize p and Q to become probabilities of the jump-chain.
-        Q /= total_mass
-
-        return total_mass, p, Q
+        self.p = p / self.total_mass  # normalize p and Q to become probabilities of the jump-chain.
+        self.Q = Q / self.total_mass
 
     def value(self, x: float) -> float:
         x, W = self.profile(x, x + self.h)
@@ -100,6 +104,8 @@ class MCScaleFunction(ScaleFunction):
     
     def profile(self, a: float, b: float) -> tuple[np.ndarray, np.ndarray]:
         assert b < int(self.upper_cutoff)
+        if self.Q is None:
+            self._setup()
 
         n = int(np.ceil(b / self.h))
         xs = np.linspace(0, b, n)
