@@ -12,7 +12,7 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable, IRandom):
     #  = exp(- lambda mu 
     #             + lambda^2 sigma^2/2 
     #             + \int_-infty^0 (e^{lambda x} - 1 - lambda x 1_{x>-1}) nu(dx))
-    # and nu(dx) is finite!
+    # no precaution is made for the fact that nu(dx) might be infinite. 
     def __init__(self, mu: float, sigma: float, nu: Callable, 
                  nu_unwarranted: Callable=None, 
                  char_multiplier: float=1, 
@@ -29,6 +29,17 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable, IRandom):
         self._max_intensity_over_ab = 1000
         self._min_intensity_over_ab = 3
         self.nu_compensation = self.get_nu_compensation()
+
+    def get_nu_measure(self, a:float, b:float, power:int=0, unwarranted:bool=False):
+        nu = self.nu_unwarranted if unwarranted and self.nu_unwarranted else self.nu
+        if a < -1 < b:
+            return self.get_nu_measure(a, -1, power, unwarranted) + self.get_nu_measure(-1, b, power, unwarranted) 
+        
+        if power == 0:
+            res = scipy.integrate.quad(nu, a, b)[0]
+        else:
+            res = scipy.integrate.quad(lambda x: nu(x) * x**power, a, b)[0]
+        return res
         
     _precomputed_nu_compensation = dict()
     def _get_key_for_precomputed_nu_compensation(self):
@@ -48,7 +59,6 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable, IRandom):
     def characteristic_function(self, t: np.complex64) -> np.complex64:
         return None
     
-    # TODO: finish up
     def laplace_transform(self, t: np.float64) -> np.float64:
         return np.exp(-self.psi(t))
     
@@ -64,7 +74,7 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable, IRandom):
             res = self._precomputed_psi[key]
         else:
             res = - t * self.mu + t*t*self.sigma*self.sigma / 2
-            res += scipy.integrate.quad(lambda x: (np.exp(t*x) - 1) * self.nu(x), -np.infty, -1)[0]
+            res += scipy.integrate.quad(lambda x: (np.exp(t*x) - 1) * self.nu(x), -self.max_jump_cutoff, -1)[0]
             res += scipy.integrate.quad(lambda x: (np.exp(t*x) - 1 - t*x) * self.nu(x), -1, 0)[0]
             self._precomputed_psi[key] = res
         return res * self._char_multiplier
@@ -75,13 +85,17 @@ class SpectrallyNegativeLevyRandomVariable(RandomVariable, IRandom):
     def cdf(self, x: np.float64) -> np.float64:
         return None
 
-    # TODO: 
     def mean(self) -> np.float64:
-        return None # self.mu + self._II1
+        res = self.mu
+        res += self.get_nu_measure(-self.max_jump_cutoff, -1, 1, True)
+        return res
 
-    # TODO: 
     def variance(self) -> np.float64:
-        return None #self.sigma*self.sigma + self._II2 + self._I2
+        res = self.sigma
+        res *= res
+        res += self.get_nu_measure(-self.max_jump_cutoff, -self.get_min_jump_size(), 2, True) \
+                - self.get_nu_measure(-self.max_jump_cutoff, -self.get_min_jump_size(), 1, True) ** 2
+        return res
         
     def max_abs_nu_on_interval(self, a: float, b: float):
         return -scipy.optimize.fmin(lambda x: -self.nu(x) if a < x < b else 0).fopt
