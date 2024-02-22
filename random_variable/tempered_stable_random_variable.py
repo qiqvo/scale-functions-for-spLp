@@ -91,7 +91,7 @@ class UntemperedTotallySkewedStableRandomVariable(TemperedTotallySkewedStableRan
     def get_nu_measure(self, a:float, b:float, power:int=0, unwarranted:bool=False):
         if not unwarranted and b > -self._min_jump_cutoff:
             b = -self._min_jump_cutoff
-        p = power - self.alpha + 1
+        p = power - self.alpha
         res = (-a)**(p) - (-b)**(p)
         res /= self._const * p
         return res

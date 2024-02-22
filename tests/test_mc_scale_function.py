@@ -1,4 +1,5 @@
 from matplotlib import pyplot as plt
+import numpy as np
 
 from random_process.skewed_stable_random_process import TotallySkewedStableRandomProcess
 from scale_function.mc_scale_function import MCScaleFunction
@@ -31,4 +32,4 @@ def test_mc_scale_function():
     plt.show()
     
     assert ws[43] == 1.501119221139845
-    assert vs[43] == 0.29646400934019485
+    assert np.abs(vs[43] - 0.29646400934019485) < 1e-8
