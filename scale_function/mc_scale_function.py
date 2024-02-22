@@ -6,6 +6,13 @@ from scale_function.scale_function import ScaleFunction
 
 
 class MCScaleFunction(ScaleFunction):
+    """
+    Based on the paper 
+    "Markov chain approximations to scale functions of Levy processes" (2013) 
+    by A. Mijatovic, M. Vidmar and S. Jacka  [arXiv:1310.1737]
+
+    and the code provided by M. Vidmar.
+    """
     def __init__(self, q:float, process: SpectrallyNegativeLevyRandomProcess, 
                  h:float, 
                  upper_cutoff:float,
@@ -25,16 +32,12 @@ class MCScaleFunction(ScaleFunction):
         if not self.process.is_infinite_activity():
             return 0
         
-        nu = self.xi.nu_unwarranted
-        if nu is None:
-            nu = self.xi.nu
-        
         res = 0 
         k = 1
         a = self.h / 2
         b = a + self.h
         while a < 1:
-            r = scipy.integrate.quad(nu, -min(b, 1), -a)[0]
+            r = self.xi.get_nu_measure(-min(b, 1), -a, unwarranted=True)
             res -= k * r
             k += 1
 
@@ -44,23 +47,17 @@ class MCScaleFunction(ScaleFunction):
         return res
     
     def _c(self, k: int):
-        nu = self.xi.nu_unwarranted
-        if nu is None:
-            nu = self.xi.nu
         if k == 0:
             if self.process.is_infinite_activity():
-                res = scipy.integrate.quad(lambda x: nu(x) * x * x, -0.5 * self.h, 0)[0]
+                res = self.xi.get_nu_measure(-0.5 * self.h, 0, power=2, unwarranted=True)
             else:
                 res = 0
         else:
-            res = scipy.integrate.quad(nu, -(k + 0.5)*self.h, -(k - 0.5)*self.h)[0]
+            res = self.xi.get_nu_measure(-(k + 0.5)*self.h, -(k - 0.5)*self.h, unwarranted=True)
         return res
     
     def _gamma(self): 
-        nu = self.xi.nu_unwarranted
-        if nu is None:
-            nu = self.xi.nu
-        res = scipy.integrate.quad(nu, -self.upper_cutoff, -3/2 *self.h)[0]
+        res = self.xi.get_nu_measure(-self.upper_cutoff, -3/2 *self.h, unwarranted=True)
         return res 
 
     def _setup(self):
@@ -84,10 +81,6 @@ class MCScaleFunction(ScaleFunction):
 
         # Is the algorithm well-defined, i.e. have we defined an upwards skip-free
         # Levy chain (see Definition 3.1 in the paper)? If not, we need a smaller h!
-        # if not (Q[0] >= 0 and p > 0):
-        #     print(Q[0])
-        #     print(p)
-        #     raise Exception('assertion error')
         assert Q[0] >= 0 and p > 0
 
         for k in range(2, upper_cutoff):  # compute entries for Q(2:n)
