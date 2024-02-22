@@ -88,3 +88,10 @@ class UntemperedTotallySkewedStableRandomVariable(TemperedTotallySkewedStableRan
         nu_compensation = ((-b) ** (1 - self.alpha) - (-a) ** (1 - self.alpha)) / (1 - self.alpha) / self._const
         return nu_compensation
     
+    def get_nu_measure(self, a:float, b:float, power:int=0, unwarranted:bool=False):
+        if not unwarranted and b > -self._min_jump_cutoff:
+            b = -self._min_jump_cutoff
+        p = power - self.alpha + 1
+        res = (-a)**(p) - (-b)**(p)
+        res /= self._const * p
+        return res
