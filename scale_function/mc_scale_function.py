@@ -2,10 +2,11 @@ import numpy as np
 import scipy
 
 from random_process.spectrally_negative_levy_random_process import SpectrallyNegativeLevyRandomProcess
-from scale_function.scale_function import ScaleFunction
+from random_process.tempered_random_process_factory import create_tempered
+from scale_function.tempered_scale_function import TemperedScaleFunction
 
 
-class MCScaleFunction(ScaleFunction):
+class MCScaleFunction(TemperedScaleFunction):
     """
     Based on the paper 
     "Markov chain approximations to scale functions of Levy processes" (2013) 
@@ -20,6 +21,10 @@ class MCScaleFunction(ScaleFunction):
         super().__init__(q, process)
         self.h = h
         self.upper_cutoff = upper_cutoff
+
+        if isinstance(self, TemperedScaleFunction):
+            self.original_q = self.q
+            self.q = 0
         self.xi = self.process.get_underlying_xi_for_time(1)
         if setup_at_init:
             self._setup()
@@ -27,7 +32,7 @@ class MCScaleFunction(ScaleFunction):
             self.Q = None
             self.p = None
             self.total_mass = None
-
+    
     def _mu_h(self):
         if not self.process.is_infinite_activity():
             return 0
@@ -95,7 +100,7 @@ class MCScaleFunction(ScaleFunction):
         x, W = self.profile(x, x + self.h)
         return W[0]
     
-    def profile(self, a: float, b: float) -> tuple[np.ndarray, np.ndarray]:
+    def _inner_profile(self, a: float, b: float) -> tuple[np.ndarray, np.ndarray]:
         assert b < int(self.upper_cutoff)
         if self.Q is None:
             self._setup()

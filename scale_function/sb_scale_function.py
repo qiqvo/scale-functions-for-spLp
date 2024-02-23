@@ -3,10 +3,11 @@ import numpy as np
 from random_process.spectrally_negative_levy_random_process import SpectrallyNegativeLevyRandomProcess
 from random_process.tempered_random_process_factory import create_tempered
 from scale_function.scale_function import ScaleFunction
+from scale_function.tempered_scale_function import TemperedScaleFunction
 from stick_breaking_representation.stick_breaking_representation_factory import StickBreakingRepresentationFactory
 
 
-class SBScaleFunction(ScaleFunction):
+class SBScaleFunction(TemperedScaleFunction):
     """
     Scale function via Stick breaking process. 
     """
@@ -14,15 +15,6 @@ class SBScaleFunction(ScaleFunction):
                  stick_breaking_representation_factory: StickBreakingRepresentationFactory,
                  N: int, resample_at_init:bool=False) -> None:
         super().__init__(q, process)
-
-        if (self.q > 0 or (self.m < 0 and self.q == 0)):
-            self.original_process = self.process
-            self.c = self.compute_c(self.q)
-            self.process = create_tempered(self.c, self.process)
-            self.m = self.process.mean(1, 0)
-        else:
-            self.c = None
-
         self.stick_breaking_representation = stick_breaking_representation_factory.create(self.process) 
         self.N = N
         if resample_at_init:
@@ -30,9 +22,6 @@ class SBScaleFunction(ScaleFunction):
         else: 
             self.stick_breaking_samples = None
 
-    def compute_c(self, q):
-        return self.process.get_underlying_xi_for_time(1).phi(q)
-    
     def resample(self):
         self.stick_breaking_samples = self.stick_breaking_representation.sample(self.N)
 
@@ -51,18 +40,16 @@ class SBScaleFunction(ScaleFunction):
             p *= np.exp(self.c * x)
         return p / self.m
 
-    def profile(self, a: float, b: float) -> tuple[np.ndarray, np.ndarray]:
+    def _inner_profile(self, a: float, b: float) -> tuple[np.ndarray, np.ndarray]:
         if self.stick_breaking_samples is None:
             self.resample()
 
         xis = self.stick_breaking_samples[:,1]
-        ps = np.sum(xis, where= xis<0, axis=1)
+        ps = np.sum(xis, where=xis<0, axis=1)
         ps = np.sort(-np.array(ps))
         rs = (ps <= b) & (ps >= a)
         values = np.arange(1, self.N + 1) / self.N / self.m
 
         ps, values = ps[rs], values[rs]
-        if self.c is not None: 
-            values *= np.exp(self.c * ps)
         
         return ps, values

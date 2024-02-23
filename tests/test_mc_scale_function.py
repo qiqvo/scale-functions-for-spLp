@@ -32,4 +32,4 @@ def test_mc_scale_function():
     plt.show()
     
     assert ws[43] == 1.501119221139845
-    assert np.abs(vs[43] - 0.29646400934019485) < 1e-8
+    assert np.abs(vs[43] - 0.3011069542236622) < 1e-8
