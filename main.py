@@ -13,7 +13,7 @@ from stick_breaking_representation.stick_breaking_representation_factory import 
 def main():
     a, b = 0, 1
     alpha = 1.6
-    q = 0.01
+    q = 1
     # drift = 0.3
 
     Y = TotallySkewedStableRandomProcess(alpha)
@@ -22,7 +22,7 @@ def main():
     # W = PosDriftTotallySkewedStableScaleFunction(q, X)
     Wf = np.vectorize(W.value)
 
-    for k in [8, 10, 12, 15]:
+    for k in [8, 10, 14]:
         T = 2**k
         epsilon = 1e-5
         n_sticks = int(np.floor(np.log(T / epsilon) / np.log(2)))
@@ -31,11 +31,11 @@ def main():
         V1 = SBScaleFunction(q, Y, P2, N)
         xs, vs = V1.profile(a, b)
         diffs = np.abs(Wf(xs) - vs)
-        plt.plot(xs, diffs, label=f'SB, k={k}')
         # plt.plot(xs, vs, label=f'SB, k={k}')
+        plt.plot(xs, diffs, label=f'SB, k={k}')
 
 
-    for k in [8, 10, 11]:
+    for k in [16, 10, 11]:
         h = 2**(-k)
         upper_cutoff = 1/h
         V2 = MCScaleFunction(q, Y, h, upper_cutoff)

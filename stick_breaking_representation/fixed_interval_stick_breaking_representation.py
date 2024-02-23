@@ -12,10 +12,10 @@ class FixedIntervalStickBreakingRepresentation(StickBreakingRepresentation, IRan
         self._n_sticks = n_sticks
     
     def measure(self, t0: float, t1: float) -> float:
-        return np.infty
+        return None
     
     def quick_measure(self, t0: float, t1: float) -> float:
-        return np.infty
+        return None
     
     def get_T(self):
         return self._T
