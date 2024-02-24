@@ -16,3 +16,12 @@ class StickBreakingRepresentation(ABC):
     def sample(self, N: int) -> np.ndarray:
         return None
     
+class PoissonSampledStickBreakingRepresentation(StickBreakingRepresentation):
+    def sample(self, N: int) -> np.ndarray:
+        raise Exception('PoissonSampledStickBreakingRepresentation'
+                        ' cannot sample without a given (s, t). Try '
+                        'to use .sample(N, s, t)')
+    
+    @abstractmethod
+    def sample(self, N: int, s: float, t: float) -> np.ndarray:
+        return None
