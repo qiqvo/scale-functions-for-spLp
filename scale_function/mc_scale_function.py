@@ -25,6 +25,7 @@ class MCScaleFunction(TemperedScaleFunction):
         if isinstance(self, TemperedScaleFunction):
             self.original_q = self.q
             self.q = 0
+            
         self.xi = self.process.get_underlying_xi_for_time(1)
         if setup_at_init:
             self._setup()

@@ -11,7 +11,7 @@ def test_mc_scale_function():
     alpha = 1.5
     q = 1
     h = 1/2**9
-    upper_cutoff = 1000
+    upper_cutoff = 1/h
     # drift = 0.3
 
     Y = TotallySkewedStableRandomProcess(alpha)
@@ -22,14 +22,14 @@ def test_mc_scale_function():
     V = MCScaleFunction(q, Y, h, upper_cutoff)
     # V = MCScaleFunction(q, X, h, upper_cutoff)
 
-    xs, ws = W.profile(a, b)
-    plt.plot(xs, ws, label='W')
+    Wf = np.vectorize(W.value)
+    # plt.plot(xs, ws, label='W')
     xs, vs = V.profile(a, b)
-    plt.plot(xs, vs, label='sampled W')
+    plt.plot(xs, vs-Wf(xs), label='sampled W')
     plt.title('Comparison of sampled W with the real W, Matija alg')
 
     plt.legend()
     plt.show()
     
-    assert ws[43] == 1.501119221139845
+    assert np.abs(Wf(xs[43]) - 0.33088746) < 1e-8
     assert np.abs(vs[43] - 0.3011069542236622) < 1e-8

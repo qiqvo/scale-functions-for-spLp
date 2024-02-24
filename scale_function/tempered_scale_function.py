@@ -28,6 +28,7 @@ class TemperedScaleFunction(ScaleFunction):
     
     def profile(self, a: float, b: float) -> tuple[ndarray, ndarray]:
         xs, vs = self._inner_profile(a, b)
+
         if self.c is not None: 
             vs *= np.exp(self.c * xs)
 
